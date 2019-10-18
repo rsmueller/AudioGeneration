@@ -45,5 +45,6 @@ public class TestingMIDI {
         }
         Thread.sleep(1000);
         midiChannels[4].allSoundOff();
+        //test test
     }
 }
