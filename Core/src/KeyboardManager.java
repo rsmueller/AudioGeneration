@@ -6,8 +6,6 @@ public class KeyboardManager implements KeyListener {
 
     private ArrayList<KeyboardListener> listeners;
 
-    private boolean shiftDown;
-
     public KeyboardManager(){
         listeners = new ArrayList<KeyboardListener>();
     }
@@ -29,8 +27,6 @@ public class KeyboardManager implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == 16)
-            shiftDown = true;
         for (KeyboardListener listener : listeners)
             listener.keyPressed(keyCode);
     }
@@ -38,8 +34,6 @@ public class KeyboardManager implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == 16)
-            shiftDown = true;
         for (KeyboardListener listener : listeners)
             listener.keyReleased(keyCode);
     }
