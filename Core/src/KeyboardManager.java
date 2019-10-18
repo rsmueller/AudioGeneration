@@ -33,7 +33,7 @@ public class KeyboardManager implements KeyListener {
         if (pressedKeyCodes.contains(keyCode))
             return;
         for (KeyboardListener listener : listeners)
-            listener.keyPressed(keyCode);
+            listener.keyPressed(e);
         pressedKeyCodes.add(keyCode);
     }
 
@@ -41,7 +41,7 @@ public class KeyboardManager implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
         for (KeyboardListener listener : listeners)
-            listener.keyReleased(keyCode);
+            listener.keyReleased(e);
         pressedKeyCodes.remove((Integer)keyCode);
     }
 }

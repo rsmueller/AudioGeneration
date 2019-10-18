@@ -1,4 +1,6 @@
+import java.awt.event.KeyEvent;
+
 public interface KeyboardListener {
-    void keyPressed(int keyCode);
-    void keyReleased(int keyCode);
+    void keyPressed(KeyEvent keyEvent);
+    void keyReleased(KeyEvent keyEvent);
 }
