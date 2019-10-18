@@ -58,7 +58,7 @@ public class SoundSynthesizer {
             if (note.isOn()) {
                 channel.noteOn(note.getNumber(), note.getVelocity());
             } else {
-                channel.noteOn(note.getNumber(), note.getVelocity());
+                channel.noteOff(note.getNumber(), note.getVelocity());
             }
         }else{
             System.out.println(instrument.name + " has no designated channel.");

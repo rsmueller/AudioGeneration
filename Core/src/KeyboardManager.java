@@ -6,8 +6,11 @@ public class KeyboardManager implements KeyListener {
 
     private ArrayList<KeyboardListener> listeners;
 
+    private ArrayList<Integer> pressedKeyCodes;
+
     public KeyboardManager(){
         listeners = new ArrayList<KeyboardListener>();
+        pressedKeyCodes = new ArrayList<Integer>();
     }
 
     public void addListener(KeyboardListener listener){
@@ -26,17 +29,19 @@ public class KeyboardManager implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key Pressed");
         int keyCode = e.getKeyCode();
+        if (pressedKeyCodes.contains(keyCode))
+            return;
         for (KeyboardListener listener : listeners)
             listener.keyPressed(keyCode);
+        pressedKeyCodes.add(keyCode);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        System.out.println("Key Released");
         int keyCode = e.getKeyCode();
         for (KeyboardListener listener : listeners)
             listener.keyReleased(keyCode);
+        pressedKeyCodes.remove((Integer)keyCode);
     }
 }
