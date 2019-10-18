@@ -6,6 +6,7 @@ public class Window extends JPanel implements Runnable {
 
     private JFrame frame;
     private KeyboardManager keyboardManager;
+    private SoundSynthesizer soundSynthesizer;
     private Thread mainThread;
 
 
@@ -13,6 +14,7 @@ public class Window extends JPanel implements Runnable {
 
         mainThread = new Thread(this);
         keyboardManager = new KeyboardManager();
+        soundSynthesizer = new SoundSynthesizer();
 
         frame = new JFrame("Audio Generation");
         frame.addKeyListener(keyboardManager);
@@ -39,7 +41,8 @@ public class Window extends JPanel implements Runnable {
     @Override
     public void run() {
         // Create new instrument
-        System.out.println("Run done");
+        Piano piano = new Piano(soundSynthesizer);
+        keyboardManager.addListener(piano);
     }
 
     private void stop(){
