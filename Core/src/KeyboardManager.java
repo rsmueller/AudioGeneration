@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class KeyboardManager implements KeyListener {
 
     private ArrayList<KeyboardListener> listeners;
-
+ //TODO: Find better way of ensuring only onKeyDown, checking arralist each time is inefficient.
     private ArrayList<Integer> pressedKeyCodes;
 
     public KeyboardManager(){
