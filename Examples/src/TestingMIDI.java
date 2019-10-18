@@ -10,12 +10,12 @@ public class TestingMIDI {
         //Midi events contain wrappers for the messages. As well as timing information.
         //public MidiEvent(MidiMessage message, long tick)
 
-        //Midi file stores midievents arranged into tracks.
+        //Midi file stores midi events arranged into tracks.
         //File represents one musical composition.
-        //Each track represents a part such as might ahve been playe by a single instrumentalist.
+        //Each track represents a part such as might have been played by a single instrumentalist.
         //Each note that the instrumentalist plays is represented by at least two events. (Note on and Note off)
 
-        //Classes that implement the MidiDevice interface can transmit and recieve messages.
+        //Classes that implement the MidiDevice interface can transmit and receive messages.
 
         Synthesizer synth = MidiSystem.getSynthesizer();
         synth.open();
@@ -23,9 +23,27 @@ public class TestingMIDI {
         Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
         synth.loadInstrument(instruments[0]);
         MidiChannel[] midiChannels = synth.getChannels();
-        //megins playing here.
+        midiChannels[4].programChange(25); // sets the instrument
+        midiChannels[1].programChange(1); // sets the instrument
+
+        //begins playing here.
+
+        // a chord
         midiChannels[4].noteOn(46, 100);
-        Thread.sleep(5000);
-        midiChannels[4].noteOff(46, 60);
+        Thread.sleep(50);
+        midiChannels[4].noteOn(50, 100);
+        Thread.sleep(50);
+        midiChannels[4].noteOn(53, 100);
+        Thread.sleep(50);
+        midiChannels[4].noteOn(57, 100);
+        Thread.sleep(1500);
+        midiChannels[4].allSoundOff();
+
+        for (int i = 20; i < 109; i++){
+            midiChannels[1].noteOn(i, 60);
+            Thread.sleep(100);
+        }
+        Thread.sleep(1000);
+        midiChannels[4].allSoundOff();
     }
 }
