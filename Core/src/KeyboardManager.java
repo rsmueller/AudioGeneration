@@ -26,6 +26,7 @@ public class KeyboardManager implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println("Key Pressed");
         int keyCode = e.getKeyCode();
         for (KeyboardListener listener : listeners)
             listener.keyPressed(keyCode);
@@ -33,6 +34,7 @@ public class KeyboardManager implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        System.out.println("Key Released");
         int keyCode = e.getKeyCode();
         for (KeyboardListener listener : listeners)
             listener.keyReleased(keyCode);

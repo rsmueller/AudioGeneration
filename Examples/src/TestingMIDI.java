@@ -20,8 +20,8 @@ public class TestingMIDI {
         Synthesizer synth = MidiSystem.getSynthesizer();
         synth.open();
 
-        Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
-        synth.loadInstrument(instruments[0]);
+        //Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
+        //synth.loadInstrument(instruments[0]);
         MidiChannel[] midiChannels = synth.getChannels();
         midiChannels[4].programChange(25); // sets the instrument
         midiChannels[1].programChange(1); // sets the instrument
@@ -40,7 +40,9 @@ public class TestingMIDI {
         midiChannels[4].allSoundOff();
 
         for (int i = 20; i < 109; i++){
-            midiChannels[1].noteOn(i, 60);
+            midiChannels[4].noteOn(i, 60);
+            if (i == 50)
+                midiChannels[4].programChange(1);
             Thread.sleep(100);
         }
         Thread.sleep(1000);
