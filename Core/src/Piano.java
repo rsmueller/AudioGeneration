@@ -1,4 +1,6 @@
 import javax.sound.midi.*;
+import java.awt.event.KeyEvent;
+
 public class Piano extends InstrumentHandler{
 
     public Piano(SoundSynthesizer synth) {
@@ -7,14 +9,16 @@ public class Piano extends InstrumentHandler{
     }
 
     @Override
-    public void keyPressed(int keyCode) {
-        Note note = new Note(46, 100, true);
+    public void keyPressed(KeyEvent keyEvent) {
+        int keyCode = keyEvent.getKeyCode();
+        Note note = new Note(keyCode, 100, true);
         synth.playNote(this, note);
     }
 
     @Override
-    public void keyReleased(int keyCode) {
-        Note note = new Note(46, 100, false);
+    public void keyReleased(KeyEvent keyEvent) {
+        int keyCode = keyEvent.getKeyCode();
+        Note note = new Note(keyCode, 100, false);
         synth.playNote(this, note);
     }
 
