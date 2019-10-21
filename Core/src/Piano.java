@@ -5,9 +5,22 @@ import java.util.Hashtable;
 public class Piano extends InstrumentHandler{
     public Dictionary<Integer, Integer> notes = new Hashtable<Integer, Integer>();
 
-    {
+    {   // keys tuned to the key of C with 'Q' being middle C
+        //middle row of letters
+        notes.put(65, 48);
+        notes.put(83, 49);
+        notes.put(68, 50);
+        notes.put(70, 51);
+        notes.put(71, 52);
+        notes.put(72, 53);
+        notes.put(74, 54);
+        notes.put(75, 55);
+        notes.put(76, 56);
+        notes.put(59, 57);
+        notes.put(222, 58);
+        notes.put(10, 59);
         //top row of letters
-        notes.put(81, 60);
+        notes.put(81, 60); //middle C
         notes.put(87, 61);
         notes.put(69, 62);
         notes.put(82, 63);
@@ -32,6 +45,8 @@ public class Piano extends InstrumentHandler{
         notes.put(48, 81);
         notes.put(45, 82);
         notes.put(61, 83);
+        //backspace to finish the scale
+        notes.put(8, 84);
     }
 
     public Piano(SoundSynthesizer synth) {
