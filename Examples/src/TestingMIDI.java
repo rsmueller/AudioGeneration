@@ -20,33 +20,34 @@ public class TestingMIDI {
         Synthesizer synth = MidiSystem.getSynthesizer();
         synth.open();
 
-        //Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
-        //synth.loadInstrument(instruments[0]);
+        Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
+        synth.loadInstrument(instruments[0]);
         MidiChannel[] midiChannels = synth.getChannels();
-        midiChannels[4].programChange(25); // sets the instrument
-        midiChannels[1].programChange(1); // sets the instrument
+        midiChannels[0].programChange(51); // sets the instrument
+        midiChannels[1].programChange(61); // sets the instrument
 
         //begins playing here.
+        int bend = 8192/2;
 
         // a chord
-        midiChannels[4].noteOn(46, 100);
-        Thread.sleep(50);
-        midiChannels[4].noteOn(50, 100);
-        Thread.sleep(50);
-        midiChannels[4].noteOn(53, 100);
-        Thread.sleep(50);
-        midiChannels[4].noteOn(57, 100);
-        Thread.sleep(1500);
-        midiChannels[4].allSoundOff();
+        midiChannels[9].setPitchBend(8192 + bend);
+        midiChannels[9].noteOn(50, 100);
+        midiChannels[9].programChange(61); // sets the instrument
 
-        for (int i = 20; i < 109; i++){
+        Thread.sleep(500);
+        midiChannels[9].noteOn(67, 100);
+        Thread.sleep(2000);
+
+        midiChannels[9].allSoundOff();
+        midiChannels[1].allSoundOff();
+
+        /*for (int i = 20; i < 109; i++){
             midiChannels[4].noteOn(i, 60);
-            if (i == 50)
-                midiChannels[4].programChange(1);
             Thread.sleep(100);
         }
         Thread.sleep(1000);
         midiChannels[4].allSoundOff();
-        //test test
+
+         */
     }
 }
