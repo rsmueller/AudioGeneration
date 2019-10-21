@@ -32,7 +32,7 @@ public class Piano extends InstrumentHandler{
         notes.put(80, 69);
         notes.put(91, 70);
         notes.put(93, 71);
-        //numbers
+        //number row
         notes.put(49, 72);
         notes.put(50, 73);
         notes.put(51, 74);
@@ -49,6 +49,8 @@ public class Piano extends InstrumentHandler{
         notes.put(8, 84);
     }
 
+    public int key = 0; //0 is key of C
+
     public Piano(SoundSynthesizer synth) {
         super(synth);
         name = "Piano";
@@ -57,14 +59,14 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode), 100, true);
+        Note note = new Note(notes.get(keyCode) + key, 100, true);
         synth.playNote(this, note);
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode), 100, false);
+        Note note = new Note(notes.get(keyCode) + key, 100, false);
         synth.playNote(this, note);
     }
 
