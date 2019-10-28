@@ -49,7 +49,7 @@ public class Piano extends InstrumentHandler{
         notes.put(8, 84);
     }
 
-    public int key = 0; //0 is key of C
+    public int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
 
     public Piano(SoundSynthesizer synth) {
         super(synth);
