@@ -3,7 +3,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class Piano extends InstrumentHandler{
-    public Dictionary<Integer, Integer> notes = new Hashtable<Integer, Integer>();
+    public Dictionary<Integer, Integer> notes = new Hashtable<>();
 
     {   // keys tuned to the key of C with 'Q' being middle C
         //middle row of letters

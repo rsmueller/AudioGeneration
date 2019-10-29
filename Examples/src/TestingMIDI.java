@@ -23,23 +23,27 @@ public class TestingMIDI {
         Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
         synth.loadInstrument(instruments[0]);
         MidiChannel[] midiChannels = synth.getChannels();
-        midiChannels[0].programChange(51); // sets the instrument
-        midiChannels[1].programChange(61); // sets the instrument
+        midiChannels[0].programChange(20); // sets the instrument
+        midiChannels[1].programChange(20); // sets the instrument
 
-        //begins playing here.
-        int bend = 8192/2;
+        int bend = 0;
 
-        // a chord
-        midiChannels[9].setPitchBend(8192 + bend);
-        midiChannels[9].noteOn(50, 100);
-        midiChannels[9].programChange(61); // sets the instrument
+        midiChannels[0].setPitchBend(8192); // default pitch bend, just shown here for reference
+        midiChannels[0].noteOn(50, 100);
+        midiChannels[1].noteOn(50, 100);
 
         Thread.sleep(500);
-        midiChannels[9].noteOn(67, 100);
-        Thread.sleep(2000);
 
-        midiChannels[9].allSoundOff();
-        midiChannels[1].allSoundOff();
+        for (int b = 0; b < 2000; b+=5){
+            midiChannels[0].setPitchBend(8192 + b); //changing pitch while playing (works)
+            System.out.printf("Bending %d\n", b);
+            Thread.sleep(10);
+        }
+
+        Thread.sleep(100);
+        midiChannels[0].programChange(21); // changing instrument while playing (doesn't work)
+        Thread.sleep(1000);
+        midiChannels[0].allSoundOff();
 
         /*for (int i = 20; i < 109; i++){
             midiChannels[4].noteOn(i, 60);
