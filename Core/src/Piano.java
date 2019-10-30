@@ -104,7 +104,7 @@ public class Piano extends InstrumentHandler{
     @Override
     public void mouseMoved(MouseEvent e) {
         synth.setBend(this, (int) ((maxY-minY-(e.getY() - minY)) / (double) (maxY - minY) * 16383));
-        velocity = ((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10;
+        velocity = ((int) ((e.getX()-minX) /(double) (maxX - minX) * 117)) + 10;
         //System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
     }
 }
