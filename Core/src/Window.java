@@ -6,6 +6,7 @@ public class Window extends JPanel implements Runnable {
 
     private JFrame frame;
     private KeyboardManager keyboardManager;
+    private ScrollWheelManager scrollWheelManager;
     private SoundSynthesizer soundSynthesizer;
     private Thread mainThread;
 
@@ -14,10 +15,12 @@ public class Window extends JPanel implements Runnable {
 
         mainThread = new Thread(this);
         keyboardManager = new KeyboardManager();
+        scrollWheelManager = new ScrollWheelManager();
         soundSynthesizer = new SoundSynthesizer();
 
         frame = new JFrame("Audio Generation");
         frame.addKeyListener(keyboardManager);
+        frame.addMouseWheelListener(scrollWheelManager);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e){
                 stop();
@@ -43,6 +46,7 @@ public class Window extends JPanel implements Runnable {
         // Create new instrument
         Piano piano = new Piano(soundSynthesizer);
         keyboardManager.addListener(piano);
+        frame.addMouseWheelListener(piano);
     }
 
     private void stop(){
