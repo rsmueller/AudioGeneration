@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -6,6 +7,7 @@ public class Piano extends InstrumentHandler{
     public Dictionary<Integer, Integer> notes = new Hashtable<>();
 
     {   // keys tuned to the key of C with 'Q' being middle C
+        notes.put(32, -1); // space bar ; note (-1) is reset bend, not an actual note
         //middle row of letters
         notes.put(65, 48);
         notes.put(83, 49);
@@ -59,8 +61,12 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode) + key, 100, true);
-        synth.playNote(this, note);
+        if (notes.get(keyCode) == -1) {
+            synth.resetBend(this);
+        } else {
+            Note note = new Note(notes.get(keyCode) + key, 100, true);
+            synth.playNote(this, note);
+        }
     }
 
     @Override
@@ -73,5 +79,10 @@ public class Piano extends InstrumentHandler{
     @Override
     public int getMidiInstrumentType() {
         return 1;
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        synth.bend(this, e.getWheelRotation()*-15); //this is where you can change the rate at which the bend is changed
     }
 }

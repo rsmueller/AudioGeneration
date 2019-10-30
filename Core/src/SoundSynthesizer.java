@@ -65,4 +65,23 @@ public class SoundSynthesizer {
         }
     }
 
+    public void bend(InstrumentHandler instrument, int amount){
+        if (handlerChannelMap.containsKey(instrument)){
+            MidiChannel channel = handlerChannelMap.get(instrument);
+            if (instrument.bend + amount > 0 && instrument.bend + amount < 16383) {
+                instrument.bend += amount;
+            }
+            channel.setPitchBend(instrument.bend);
+            System.out.println(instrument.bend);
+        }
+    }
+
+    public void resetBend(InstrumentHandler instrument) {
+        if (handlerChannelMap.containsKey(instrument)) {
+            MidiChannel channel = handlerChannelMap.get(instrument);
+            instrument.bend = 8192;
+            channel.setPitchBend(instrument.bend);
+        }
+    }
+
 }
