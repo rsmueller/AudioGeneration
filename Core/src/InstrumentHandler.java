@@ -1,4 +1,8 @@
-public abstract class InstrumentHandler implements KeyboardListener{
+import java.awt.event.MouseWheelListener;
+
+public abstract class InstrumentHandler implements KeyboardListener, MouseWheelListener {
+
+    public int bend = 8192;
 
     protected SoundSynthesizer synth;
 
