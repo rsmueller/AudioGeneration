@@ -65,7 +65,7 @@ public class SoundSynthesizer {
         }
     }
 
-    public void bend(InstrumentHandler instrument, int amount){
+    /*public void bend(InstrumentHandler instrument, int amount){ // outdated scroll wheel bend method
         if (handlerChannelMap.containsKey(instrument)){
             MidiChannel channel = handlerChannelMap.get(instrument);
             if (instrument.bend + amount > 0 && instrument.bend + amount < 16383) {
@@ -73,6 +73,15 @@ public class SoundSynthesizer {
             }
             channel.setPitchBend(instrument.bend);
             System.out.println(instrument.bend);
+        }
+    }*/
+
+    public void setBend(InstrumentHandler instrument, int amount){
+        if (handlerChannelMap.containsKey(instrument)) {
+            MidiChannel channel = handlerChannelMap.get(instrument);
+            instrument.bend = amount;
+            channel.setPitchBend(instrument.bend);
+            //System.out.println(instrument.bend);
         }
     }
 

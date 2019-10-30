@@ -1,5 +1,6 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseEvent;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -51,6 +52,14 @@ public class Piano extends InstrumentHandler{
         notes.put(8, 84);
     }
 
+    private int maxY = 992;
+    private int minY = 30;
+
+    int maxX = 492;
+    int minX = 7;
+
+    int velocity = 100;
+
     public int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
 
     public Piano(SoundSynthesizer synth) {
@@ -64,7 +73,7 @@ public class Piano extends InstrumentHandler{
         if (notes.get(keyCode) == -1) {
             synth.resetBend(this);
         } else {
-            Note note = new Note(notes.get(keyCode) + key, 100, true);
+            Note note = new Note(notes.get(keyCode) + key, velocity, true);
             synth.playNote(this, note);
         }
     }
@@ -72,7 +81,7 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode) + key, 100, false);
+        Note note = new Note(notes.get(keyCode) + key, velocity, false);
         synth.playNote(this, note);
     }
 
@@ -83,6 +92,19 @@ public class Piano extends InstrumentHandler{
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        synth.bend(this, e.getWheelRotation()*-15); //this is where you can change the rate at which the bend is changed
+        /*int sign = e.getWheelRotation()/Math.abs(e.getWheelRotation());
+        synth.bend(this, (int)(Math.pow(e.getWheelRotation(), 2)*-50) * sign); //this is where you can change the rate at which the bend is changed*/
+    } // not a good way to do it, so its replaced with the mouse position method
+
+    @Override
+    public void mouseDragged(MouseEvent e) { //not necessary at the moment
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        synth.setBend(this, (int) ((maxY-minY-(e.getY() - minY)) / (double) (maxY - minY) * 16383));
+        velocity = ((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10;
+        //System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
     }
 }
