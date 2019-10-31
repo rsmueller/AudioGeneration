@@ -9,6 +9,8 @@ public class SoundSynthesizer {
     private MidiChannel[] channels;
     private Map<InstrumentHandler, MidiChannel> handlerChannelMap;
 
+    private Recording recording;
+
     public SoundSynthesizer(){
 
         try {
@@ -29,6 +31,8 @@ public class SoundSynthesizer {
         channels = temp;
 
         handlerChannelMap = new HashMap<InstrumentHandler, MidiChannel>();
+
+        recording = new Recording();
     }
 
     public void addInstrument(InstrumentHandler instrument){
@@ -60,9 +64,14 @@ public class SoundSynthesizer {
             } else {
                 channel.noteOff(note.getNumber(), note.getVelocity());
             }
+            recording.addNote(note);
         }else{
             System.out.println(instrument.name + " has no designated channel.");
         }
+    }
+
+    public Recording getRecording() {
+        return recording;
     }
 
 }

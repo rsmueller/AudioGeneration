@@ -33,7 +33,7 @@ public class Window extends JPanel implements Runnable {
     }
 
     // Temporary
-    public static void main(String[] args){
+    public static void main(String[] args) {
         new Window();
         System.out.println("Main done");
     }
@@ -43,6 +43,8 @@ public class Window extends JPanel implements Runnable {
         // Create new instrument
         Piano piano = new Piano(soundSynthesizer);
         keyboardManager.addListener(piano);
+        PlaybackControls controls = new PlaybackControls(soundSynthesizer);
+        keyboardManager.addListener(controls);
     }
 
     private void stop(){

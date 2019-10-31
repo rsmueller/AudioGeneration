@@ -1,9 +1,8 @@
 import java.awt.event.KeyEvent;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.*;
 
 public class Piano extends InstrumentHandler{
-    public Dictionary<Integer, Integer> notes = new Hashtable<Integer, Integer>();
+    public HashMap<Integer, Integer> notes = new HashMap<Integer, Integer>();
 
     {   // keys tuned to the key of C with 'Q' being middle C
         //middle row of letters
@@ -59,15 +58,19 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode) + key, 100, true);
-        synth.playNote(this, note);
+        if(notes.containsKey(keyCode)) {
+            Note note = new Note(notes.get(keyCode) + key, 100, true);
+            synth.playNote(this, note);
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode) + key, 100, false);
-        synth.playNote(this, note);
+        if(notes.containsKey(keyCode)) {
+            Note note = new Note(notes.get(keyCode) + key, 100, false);
+            synth.playNote(this, note);
+        }
     }
 
     @Override
