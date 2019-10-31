@@ -24,7 +24,7 @@ public class Window extends JPanel implements Runnable {
             }
         });
         frame.add(this);
-        frame.setSize(300,300);
+        frame.setSize(500,1000);
         frame.setVisible(true);
         frame.toFront();
 
@@ -43,6 +43,8 @@ public class Window extends JPanel implements Runnable {
         // Create new instrument
         Piano piano = new Piano(soundSynthesizer);
         keyboardManager.addListener(piano);
+        frame.addMouseWheelListener(piano);
+        frame.addMouseMotionListener(piano);
     }
 
     private void stop(){
