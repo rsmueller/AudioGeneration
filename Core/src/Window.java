@@ -46,6 +46,8 @@ public class Window extends JPanel implements Runnable {
         frame.addMouseWheelListener(piano);
         frame.addMouseMotionListener(piano);
         frame.addComponentListener(piano);
+        PlaybackControls controls = new PlaybackControls(soundSynthesizer);
+        keyboardManager.addListener(controls);
     }
 
     private void stop(){

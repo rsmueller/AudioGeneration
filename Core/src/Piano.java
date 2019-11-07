@@ -6,7 +6,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class Piano extends InstrumentHandler{
-    private Dictionary<Integer, Integer> notes = new Hashtable<>();
+    public HashMap<Integer, Integer> notes = new HashMap<Integer, Integer>();
 
     {   // keys tuned to the key of C with 'Q' being middle C
         notes.put(32, -1); // space bar ; note (-1) is reset bend, not an actual note
