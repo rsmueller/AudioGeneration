@@ -24,7 +24,7 @@ public class Window extends JPanel implements Runnable {
             }
         });
         frame.add(this);
-        frame.setSize(500,1000);
+        frame.setSize(500,500);
         frame.setVisible(true);
         frame.toFront();
 
@@ -45,6 +45,7 @@ public class Window extends JPanel implements Runnable {
         keyboardManager.addListener(piano);
         frame.addMouseWheelListener(piano);
         frame.addMouseMotionListener(piano);
+        frame.addComponentListener(piano);
     }
 
     private void stop(){

@@ -1,3 +1,4 @@
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseEvent;
@@ -5,7 +6,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class Piano extends InstrumentHandler{
-    public Dictionary<Integer, Integer> notes = new Hashtable<>();
+    private Dictionary<Integer, Integer> notes = new Hashtable<>();
 
     {   // keys tuned to the key of C with 'Q' being middle C
         notes.put(32, -1); // space bar ; note (-1) is reset bend, not an actual note
@@ -52,13 +53,13 @@ public class Piano extends InstrumentHandler{
         notes.put(8, 84);
     }
 
-    private int maxY = 992;
+    private int maxY = 492; // window height - 8
     private int minY = 30;
 
-    int maxX = 492;
-    int minX = 7;
+    private int maxX = 492; // window width - 8
+    private int minX = 7;
 
-    int velocity = 100;
+    private int velocity = 100;
 
     public int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
 
@@ -97,7 +98,7 @@ public class Piano extends InstrumentHandler{
     } // not a good way to do it, so its replaced with the mouse position method
 
     @Override
-    public void mouseDragged(MouseEvent e) { //not necessary at the moment
+    public void mouseDragged(MouseEvent e) { //not necessary atm
 
     }
 
@@ -106,5 +107,28 @@ public class Piano extends InstrumentHandler{
         synth.setBend(this, (int) ((maxY-minY-(e.getY() - minY)) / (double) (maxY - minY) * 16383));
         velocity = ((int) ((e.getX()-minX) /(double) (maxX - minX) * 117)) + 10;
         //System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) { //changes scale of bend & velocity when window size is changed
+        maxY = e.getComponent().getHeight()-8;
+        maxX = e.getComponent().getWidth()-8;
+        //System.out.println(e.paramString());
+        //System.out.println(maxX + " " + maxY);
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {//not necessary atm
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {//not necessary atm
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {// not necessary atm
+
     }
 }

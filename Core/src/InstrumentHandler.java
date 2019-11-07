@@ -1,7 +1,8 @@
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseMotionListener;
 
-public abstract class InstrumentHandler implements KeyboardListener, MouseWheelListener, MouseMotionListener {
+public abstract class InstrumentHandler implements KeyboardListener, MouseWheelListener, MouseMotionListener, ComponentListener {
 
     public int bend = 8192;
 
