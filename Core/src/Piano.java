@@ -2,11 +2,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseEvent;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class Piano extends InstrumentHandler{
-    public HashMap<Integer, Integer> notes = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> notes = new HashMap<>();
 
     {   // keys tuned to the key of C with 'Q' being middle C
         notes.put(32, -1); // space bar ; note (-1) is reset bend, not an actual note
@@ -61,7 +60,7 @@ public class Piano extends InstrumentHandler{
 
     private int velocity = 100;
 
-    public int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
+    private int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
 
     public Piano(SoundSynthesizer synth) {
         super(synth);
@@ -71,19 +70,23 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        if (notes.get(keyCode) == -1) {
-            synth.resetBend(this);
-        } else {
+        if (notes.get(keyCode) > 0) {
             Note note = new Note(notes.get(keyCode) + key, velocity, true);
             synth.playNote(this, note);
+        } else {
+            if (notes.get(keyCode) == -1) {
+                synth.resetBend(this);
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        Note note = new Note(notes.get(keyCode) + key, velocity, false);
-        synth.playNote(this, note);
+        if (notes.get(keyCode) > 0) {
+            Note note = new Note(notes.get(keyCode) + key, velocity, false);
+            synth.playNote(this, note);
+        }
     }
 
     @Override
@@ -98,9 +101,7 @@ public class Piano extends InstrumentHandler{
     } // not a good way to do it, so its replaced with the mouse position method
 
     @Override
-    public void mouseDragged(MouseEvent e) { //not necessary atm
-
-    }
+    public void mouseDragged(MouseEvent e) { }//not necessary atm
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -118,17 +119,11 @@ public class Piano extends InstrumentHandler{
     }
 
     @Override
-    public void componentMoved(ComponentEvent e) {//not necessary atm
-
-    }
+    public void componentMoved(ComponentEvent e) {}//not necessary atm
 
     @Override
-    public void componentShown(ComponentEvent e) {//not necessary atm
-
-    }
+    public void componentShown(ComponentEvent e) {}//not necessary atm
 
     @Override
-    public void componentHidden(ComponentEvent e) {// not necessary atm
-
-    }
+    public void componentHidden(ComponentEvent e) {}// not necessary atm
 }
