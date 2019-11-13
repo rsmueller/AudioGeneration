@@ -1,5 +1,4 @@
 import javax.sound.midi.*;
-import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,10 +8,11 @@ public class SoundSynthesizer {
     private MidiChannel[] channels;
     private Map<InstrumentHandler, MidiChannel> handlerChannelMap;
 
-    public SoundSynthesizer(){
+    SoundSynthesizer(){
 
         try {
             synth = MidiSystem.getSynthesizer();
+            System.out.println("Synthesizer Latency: "+synth.getLatency());
             synth.open();
         }catch(MidiUnavailableException midiError){
             System.out.println("Default Synthesizer is unavailable");
@@ -31,7 +31,7 @@ public class SoundSynthesizer {
         handlerChannelMap = new HashMap<InstrumentHandler, MidiChannel>();
     }
 
-    public void addInstrument(InstrumentHandler instrument){
+    void addInstrument(InstrumentHandler instrument){
         int midiInstrumentType = instrument.getMidiInstrumentType();
         MidiChannel chosenChannel = null;
         for (MidiChannel channel : channels){
@@ -52,7 +52,7 @@ public class SoundSynthesizer {
         handlerChannelMap.remove(instrument);
     }
 
-    public void playNote(InstrumentHandler instrument, Note note){
+    void playNote(InstrumentHandler instrument, Note note){
         if (handlerChannelMap.containsKey(instrument)) {
             MidiChannel channel = handlerChannelMap.get(instrument);
             if (note.isOn()) {
@@ -76,7 +76,7 @@ public class SoundSynthesizer {
         }
     }*/
 
-    public void setBend(InstrumentHandler instrument, int amount){
+    void setBend(InstrumentHandler instrument, int amount){
         if (handlerChannelMap.containsKey(instrument)) {
             MidiChannel channel = handlerChannelMap.get(instrument);
             instrument.bend = amount;
@@ -85,7 +85,7 @@ public class SoundSynthesizer {
         }
     }
 
-    public void resetBend(InstrumentHandler instrument) {
+    void resetBend(InstrumentHandler instrument) {
         if (handlerChannelMap.containsKey(instrument)) {
             MidiChannel channel = handlerChannelMap.get(instrument);
             instrument.bend = 8192;

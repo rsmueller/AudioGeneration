@@ -1,26 +1,27 @@
+import javax.sound.midi.ControllerEventListener;
 import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
-public class Window extends JPanel implements Runnable {
+/**
+ * Handles the View of MVC, is the display and connection between input and output.
+ */
+public class Window extends JPanel implements KeyboardListener, MouseWheelListener, MouseMotionListener {
 
-    private JFrame frame;
-    private KeyboardManager keyboardManager;
-    private SoundSynthesizer soundSynthesizer;
-    private Thread mainThread;
+    private Controller controller;
 
 
-    public Window(){
+    Window(Controller c){
 
-        mainThread = new Thread(this);
-        keyboardManager = new KeyboardManager();
-        soundSynthesizer = new SoundSynthesizer();
+        KeyboardManager keyboardManager = new KeyboardManager();
+        keyboardManager.addListener(c);
 
-        frame = new JFrame("Audio Generation");
+        controller = c;
+
+        JFrame frame = new JFrame("Audio Generation");
         frame.addKeyListener(keyboardManager);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e){
-                stop();
+                controller.stop();
             }
         });
         frame.add(this);
@@ -28,30 +29,35 @@ public class Window extends JPanel implements Runnable {
         frame.setVisible(true);
         frame.toFront();
 
-        mainThread.start();
-        System.out.println("Window done");
+        frame.addMouseWheelListener(this);
+        frame.addMouseMotionListener(this);
+
     }
 
-    // Temporary
-    public static void main(String[] args){
-        new Window();
-        System.out.println("Main done");
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        controller.keyPressed(e);
     }
 
     @Override
-    public void run() {
-        // Create new instrument
-        Piano piano = new Piano(soundSynthesizer);
-        keyboardManager.addListener(piano);
-        frame.addMouseWheelListener(piano);
-        frame.addMouseMotionListener(piano);
+    public void keyReleased(KeyEvent e) {
+        controller.keyReleased(e);
     }
 
-    private void stop(){
-        try{
-            mainThread.join();
-        }catch(Exception ignored){}
-        System.out.println("Stop done");
-        System.exit(0);
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        controller.mouseDragged(e);
     }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        controller.mouseMoved(e);
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        controller.mouseWheelMoved(e);
+    }
+
 }
