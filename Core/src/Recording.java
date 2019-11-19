@@ -4,11 +4,13 @@ import java.time.*;
 
 class Recording {
 
+    private static int MAX_14 = 16383; // 2 ^ 14 - 1
+
     // Timestamp of the first note in the recording
     private long startTime = 0;
 
     // Internal storage of notes and times
-    private List<Note> notes;
+    private List<ShortMessage> messages;
     private List<Long> timestamps;
 
     private Sequencer sequencer;
@@ -17,7 +19,7 @@ class Recording {
      * Creates a new empty recording
      */
     Recording() {
-        notes = new ArrayList<Note>();
+        messages = new ArrayList<ShortMessage>();
         timestamps = new ArrayList<Long>();
 
         // Try to get the default synthesizer
@@ -42,8 +44,35 @@ class Recording {
             startTime = currentTime;
         }
 
-        notes.add(note);
-        timestamps.add(currentTime);
+        try {
+            ShortMessage message = noteMessage(note);
+            messages.add(message);
+            timestamps.add(currentTime);
+        } catch (InvalidMidiDataException e) {
+            // Should never be reached
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Adds the given bend amount to the recording and creates a timestamp for it.
+     *
+     * Will not begin recording if it has not been started.
+     *
+     * @param amount The amount to set pitch bend to.
+     */
+    public void setBend(int amount) {
+        if(startTime > 0) {
+            long currentTime = Instant.now().toEpochMilli();
+            try {
+                ShortMessage message = bendMessage(amount);
+                messages.add(message);
+                timestamps.add(currentTime);
+            } catch (InvalidMidiDataException e) {
+                // Should never be reached
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -67,10 +96,9 @@ class Recording {
     private Sequence createSequence() throws InvalidMidiDataException {
         Sequence sequence = new Sequence(Sequence.SMPTE_30, 10);
         Track track = sequence.createTrack();
-        for(int i = 0; i < notes.size(); i++) {
-            ShortMessage message = noteMessage(notes.get(i));
+        for(int i = 0; i < messages.size(); i++) {
             long tick = milliToTick(timestamps.get(i));
-            MidiEvent event = new MidiEvent(message, tick);
+            MidiEvent event = new MidiEvent(messages.get(i), tick);
             track.add(event);
         }
         return sequence;
@@ -86,6 +114,28 @@ class Recording {
     private ShortMessage noteMessage(Note note) throws InvalidMidiDataException {
         int on = note.isOn() ? ShortMessage.NOTE_ON : ShortMessage.NOTE_OFF;
         return new ShortMessage(on, 0, note.getNumber(), note.getVelocity());
+    }
+
+    /**
+     * Creates a MIDI message for setting the pitch bend.
+     *
+     * @param amount the amount to set bend to with the MIDI message.
+     * @return a midi mesage describing the given bend amount.
+     * @throws InvalidMidiDataException if there is an error creating the message.
+     */
+    private ShortMessage bendMessage(int amount) throws InvalidMidiDataException {
+        if(amount < 0) {
+            amount = 0;
+        } else if(amount > MAX_14) {
+            amount = MAX_14;
+        }
+
+        // convert int into two halves of a 14-bit int
+        // sourced from https://arduino.stackexchange.com/questions/18955/how-to-send-a-pitch-bend-midi-message-using-arcore
+        int lowValue = amount & 0x7F;
+        int highValue = amount >> 7;
+
+        return new ShortMessage(ShortMessage.PITCH_BEND, 0, lowValue, highValue);
     }
 
     /**

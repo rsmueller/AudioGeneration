@@ -70,12 +70,14 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        if (notes.get(keyCode) > 0) {
-            Note note = new Note(notes.get(keyCode) + key, velocity, true);
-            synth.playNote(this, note);
-        } else {
-            if (notes.get(keyCode) == -1) {
-                synth.resetBend(this);
+        if(notes.containsKey(keyCode)) {
+            if (notes.get(keyCode) > 0) {
+                Note note = new Note(notes.get(keyCode) + key, velocity, true);
+                synth.playNote(this, note);
+            } else {
+                if (notes.get(keyCode) == -1) {
+                    synth.resetBend(this);
+                }
             }
         }
     }
@@ -83,9 +85,11 @@ public class Piano extends InstrumentHandler{
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         int keyCode = keyEvent.getKeyCode();
-        if (notes.get(keyCode) > 0) {
-            Note note = new Note(notes.get(keyCode) + key, velocity, false);
-            synth.playNote(this, note);
+        if(notes.containsKey(keyCode)) {
+            if (notes.get(keyCode) > 0) {
+                Note note = new Note(notes.get(keyCode) + key, velocity, false);
+                synth.playNote(this, note);
+            }
         }
     }
 

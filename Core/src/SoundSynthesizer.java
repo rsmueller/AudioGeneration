@@ -90,6 +90,7 @@ public class SoundSynthesizer {
             MidiChannel channel = handlerChannelMap.get(instrument);
             instrument.bend = amount;
             channel.setPitchBend(instrument.bend);
+            recording.setBend(instrument.bend);
             //System.out.println(instrument.bend);
         }
     }
@@ -99,6 +100,7 @@ public class SoundSynthesizer {
             MidiChannel channel = handlerChannelMap.get(instrument);
             instrument.bend = 8192;
             channel.setPitchBend(instrument.bend);
+            recording.setBend(instrument.bend);
         }
     }
 
