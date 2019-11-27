@@ -12,6 +12,8 @@ class Recording {
     // Timestamp of the first note in the recording
     private long startTime = 0;
 
+    private int currentChannel = 0;
+
     // Internal storage of notes and times
     private List<ShortMessage> messages;
     private List<Long> timestamps;
@@ -50,7 +52,7 @@ class Recording {
         try {
             ShortMessage message = noteMessage(note);
             messages.add(message);
-            timestamps.add(currentTime);
+            timestamps.add(currentTime - startTime);
         } catch (InvalidMidiDataException e) {
             // Should never be reached
             e.printStackTrace();
@@ -70,7 +72,7 @@ class Recording {
             try {
                 ShortMessage message = bendMessage(amount);
                 messages.add(message);
-                timestamps.add(currentTime);
+                timestamps.add(currentTime - startTime);
             } catch (InvalidMidiDataException e) {
                 // Should never be reached
                 e.printStackTrace();
@@ -87,6 +89,21 @@ class Recording {
             sequencer.start();
         } catch (InvalidMidiDataException e) {
             System.out.println("Could not play recording.");
+        }
+    }
+
+    /**
+     * Resets the time and increments the channel so a new layer can be recorded.
+     *
+     * @throws Exception if there are too many layers in the recording
+     */
+    public void beginLayer() throws Exception {
+        currentChannel++;
+        if(currentChannel < 16) { // MIDI has a max of 16 channels
+            startTime = Instant.now().toEpochMilli();
+        } else {
+            // This should be handled in UI code
+            throw new Exception("Too many layers");
         }
     }
 
@@ -129,7 +146,7 @@ class Recording {
      */
     private ShortMessage noteMessage(Note note) throws InvalidMidiDataException {
         int on = note.isOn() ? ShortMessage.NOTE_ON : ShortMessage.NOTE_OFF;
-        return new ShortMessage(on, 0, note.getNumber(), note.getVelocity());
+        return new ShortMessage(on, currentChannel, note.getNumber(), note.getVelocity());
     }
 
     /**
@@ -151,7 +168,7 @@ class Recording {
         int lowValue = amount & 0x7F;
         int highValue = amount >> 7;
 
-        return new ShortMessage(ShortMessage.PITCH_BEND, 0, lowValue, highValue);
+        return new ShortMessage(ShortMessage.PITCH_BEND, currentChannel, lowValue, highValue);
     }
 
     /**
@@ -162,11 +179,10 @@ class Recording {
      * @return the MIDI tick closest to the given time in milliseconds.
      */
     private long milliToTick(long millis) {
-        long offset = millis - startTime;
         long ticksPerSecond = 30 * 10;
         long millisPerSecond = 1000;
 
-        return (long) ((double) offset / millisPerSecond * ticksPerSecond);
+        return (long) ((double) millis / millisPerSecond * ticksPerSecond);
     }
 
 }

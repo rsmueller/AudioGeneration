@@ -4,7 +4,10 @@ import java.io.File;
 /**
  * A (currently) keyboard-based controller for playing back recordings.
  *
- * Current controls are to press F1 to play back the recorded music.
+ * Current controls are:
+ * Press F1 to playback the recording
+ * Press F2 to save the recording to output.midi
+ * Press F3 to begin recording a new layer
  */
 public class PlaybackControls implements KeyboardListener {
 
@@ -29,6 +32,17 @@ public class PlaybackControls implements KeyboardListener {
         // Save the recording to a file when F2 is pressed
         if(keyEvent.getKeyCode() == KeyEvent.VK_F2) {
             synth.getRecording().write(new File("output.midi"));
+        }
+
+        // Begin recording a new layer when F3 is pressed
+        if(keyEvent.getKeyCode() == KeyEvent.VK_F3) {
+            try {
+                synth.getRecording().play();
+                synth.getRecording().beginLayer();
+            } catch (Exception e) {
+                // Reached when too many layers are added
+                // Should be prevented or displayed to user
+            }
         }
     }
 
