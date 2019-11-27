@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  * A (currently) keyboard-based controller for playing back recordings.
@@ -23,6 +24,11 @@ public class PlaybackControls implements KeyboardListener {
         // Play the recording when F1 is pressed
         if(keyEvent.getKeyCode() == KeyEvent.VK_F1) {
             synth.getRecording().play();
+        }
+
+        // Save the recording to a file when F2 is pressed
+        if(keyEvent.getKeyCode() == KeyEvent.VK_F2) {
+            synth.getRecording().write(new File("output.midi"));
         }
     }
 

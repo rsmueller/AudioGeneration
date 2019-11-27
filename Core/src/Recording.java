@@ -1,10 +1,13 @@
 import javax.sound.midi.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.time.*;
 
 class Recording {
 
     private static int MAX_14 = 16383; // 2 ^ 14 - 1
+    private static int FILE_TYPE = 1; // Midi Type 1 file, supports multiple tracks
 
     // Timestamp of the first note in the recording
     private long startTime = 0;
@@ -84,6 +87,19 @@ class Recording {
             sequencer.start();
         } catch (InvalidMidiDataException e) {
             System.out.println("Could not play recording.");
+        }
+    }
+
+    /**
+     * Writes this recording to the given MIDI file.
+     *
+     * @param file The file to write to.
+     */
+    public void write(File file) {
+        try {
+            MidiSystem.write(createSequence(), FILE_TYPE, file);
+        } catch (IOException|InvalidMidiDataException e) {
+            System.out.println("Could not save recording.");
         }
     }
 
