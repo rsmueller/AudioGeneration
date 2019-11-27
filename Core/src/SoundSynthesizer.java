@@ -6,7 +6,7 @@ public class SoundSynthesizer {
 
     private Synthesizer synth;
     private MidiChannel[] channels;
-    private Map<InstrumentHandler, MidiChannel> handlerChannelMap;
+    private Map<Integer, MidiChannel> instrumentChannelMap;
 
     SoundSynthesizer(){
 
@@ -28,14 +28,15 @@ public class SoundSynthesizer {
             temp[i-1] = channels[i];
         channels = temp;
 
-        handlerChannelMap = new HashMap<InstrumentHandler, MidiChannel>();
+        instrumentChannelMap = new HashMap<Integer, MidiChannel>();
     }
 
-    void addInstrument(InstrumentHandler instrument){
-        int midiInstrumentType = instrument.getMidiInstrumentType();
+    void addInstrument(int instrument){
+        //int midiInstrumentType = instrument.getMidiInstrumentType();
+        //New system takes over, going straight to the integer representation of the instrument.
         MidiChannel chosenChannel = null;
         for (MidiChannel channel : channels){
-            if ( ! handlerChannelMap.containsValue(channel)){
+            if ( ! instrumentChannelMap.containsValue(channel)){
                 chosenChannel = channel;
                 break;
             }
@@ -44,24 +45,28 @@ public class SoundSynthesizer {
             System.out.println("Too many instruments loaded to add another instrument.");
             return;
         }
-        chosenChannel.programChange(midiInstrumentType);
-        handlerChannelMap.put(instrument, chosenChannel);
+        chosenChannel.programChange(instrument);
+        instrumentChannelMap.put(instrument, chosenChannel);
     }
 
-    public void removeInstrument(InstrumentHandler instrument){
-        handlerChannelMap.remove(instrument);
+    public void removeInstrument(int instrument){
+        instrumentChannelMap.remove(instrument);
     }
 
-    void playNote(InstrumentHandler instrument, Note note){
-        if (handlerChannelMap.containsKey(instrument)) {
-            MidiChannel channel = handlerChannelMap.get(instrument);
+    public void clearInstruments(){instrumentChannelMap.clear();}
+
+    void playNote(Note note){
+        int instrument = note.getInstrument();
+        if (instrumentChannelMap.containsKey(instrument)) {
+            MidiChannel channel = instrumentChannelMap.get(instrument);
             if (note.isOn()) {
                 channel.noteOn(note.getNumber(), note.getVelocity());
             } else {
                 channel.noteOff(note.getNumber(), note.getVelocity());
             }
         }else{
-            System.out.println(instrument.name + " has no designated channel.");
+            String instrumentName = LoadoutManager.getInstrumentClass(instrument).getName();
+            System.out.println(instrumentName + " has no designated channel.");
         }
     }
 
@@ -76,9 +81,10 @@ public class SoundSynthesizer {
         }
     }*/
 
-    void setBend(InstrumentHandler instrument, int amount){
-        if (handlerChannelMap.containsKey(instrument)) {
-            MidiChannel channel = handlerChannelMap.get(instrument);
+    /*
+    void setBend(int instrument, int amount){
+        if (instrumentChannelMap.containsKey(instrument)) {
+            MidiChannel channel = instrumentChannelMap.get(instrument);
             instrument.bend = amount;
             channel.setPitchBend(instrument.bend);
             //System.out.println(instrument.bend);
@@ -86,11 +92,11 @@ public class SoundSynthesizer {
     }
 
     void resetBend(InstrumentHandler instrument) {
-        if (handlerChannelMap.containsKey(instrument)) {
-            MidiChannel channel = handlerChannelMap.get(instrument);
+        if (instrumentChannelMap.containsKey(instrument)) {
+            MidiChannel channel = instrumentChannelMap.get(instrument);
             instrument.bend = 8192;
             channel.setPitchBend(instrument.bend);
         }
-    }
+    }*/
 
 }

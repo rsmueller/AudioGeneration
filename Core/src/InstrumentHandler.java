@@ -6,7 +6,7 @@ import java.awt.event.MouseMotionListener;
  * However it is not a big deal if they do not want to do anything on certain inputs
  * Such as mouse motion.
  */
-public abstract class InstrumentHandler implements KeyboardListener, MouseWheelListener, MouseMotionListener {
+public abstract class InstrumentHandler implements MouseWheelListener, MouseMotionListener {
 
     public int bend = 8192;
 
@@ -14,11 +14,4 @@ public abstract class InstrumentHandler implements KeyboardListener, MouseWheelL
 
     protected String name;
 
-    public InstrumentHandler(SoundSynthesizer synth){
-        this.synth = synth;
-
-        synth.addInstrument(this);
-    }
-
-    public abstract int getMidiInstrumentType();
 }
