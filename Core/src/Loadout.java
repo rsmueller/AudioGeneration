@@ -13,11 +13,18 @@ public class Loadout {
     public Integer[] typesOfInstruments;
     private InstrumentHandler mouseInstrument;
 
+    /**
+     * A loadout is loaded from a .loadout file.
+     * Uses a scanner to read through each line and saves the keycode
+     * notes and instruments for each keycode to this instance.
+     * @param loadout
+     */
     public Loadout(File loadout){
         try {
+            //A temporary array list that adds integer representations of instruments
+            //Then transfers it to typesOfInstruments afterwards
             ArrayList<Integer> instruments = new ArrayList<Integer>();
             Scanner sc = new Scanner(loadout);
-            typesOfInstruments = new Integer[instruments.size()];
             int mouseInstrCode = Integer.parseInt(sc.nextLine());
 
             /*
@@ -39,7 +46,7 @@ public class Loadout {
                 //key is KeyCode, 2nd is the note and instrument it is on
                 notes.put(keyCode, new Integer[]{note, instr});
             }
-            typesOfInstruments = instruments.toArray(new Integer[instruments.size()]);
+            typesOfInstruments = instruments.toArray(new Integer[0]);
         }catch(FileNotFoundException e){
             System.out.println("Error, layout file not found.");
             System.out.println(e.getMessage());
@@ -56,6 +63,11 @@ public class Loadout {
         }
     }
 
+    /**
+     * getNote returns the MIDI note representation at specified keycode
+     * @param keyCode
+     * @return
+     */
     public int getNote(int keyCode){
         try {
             return notes.get(keyCode)[0];
@@ -65,6 +77,11 @@ public class Loadout {
         return 0;
     }
 
+    /**
+     * getInstrument returns the MIDI code representation of instrument at specified keycode
+     * @param keyCode
+     * @return
+     */
     public int getInstrument(int keyCode){
         try {
             return notes.get(keyCode)[1];
@@ -74,6 +91,11 @@ public class Loadout {
         return 0;
     }
 
+    /**
+     * There is only 1 mouse instrument per loadout
+     * returns the one for the current loadout
+     * @return
+     */
     public InstrumentHandler getMouseInstrument(){return mouseInstrument;}
 
     //Test it works
