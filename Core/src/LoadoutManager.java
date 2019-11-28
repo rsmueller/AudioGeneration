@@ -1,5 +1,6 @@
 import java.awt.event.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
     }
 
     public void setToDefault(){
-        File layoutFile = new File("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\guitar.layout");
+        File layoutFile = new File("resources\\guitar.layout");
         Loadout def = new Loadout(layoutFile);
         setCurrentLoadout(def);
     }
