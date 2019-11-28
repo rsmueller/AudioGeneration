@@ -1,3 +1,4 @@
+import java.awt.event.*;
 import java.io.File;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -7,7 +8,7 @@ import java.util.Map;
  * Loadout Manager handles loading from resources directory
  * as well as saving custom ones to resources.
  */
-public class LoadoutManager {
+public class LoadoutManager implements KeyboardListener, MouseMotionListener, MouseWheelListener {
 
     private Loadout currentLoadout;
     private SoundSynthesizer ss;
@@ -82,4 +83,42 @@ public class LoadoutManager {
     public InstrumentHandler getMouseInstrument(){
         return currentLoadout.getMouseInstrument();
     }
+
+    // ------------------Call input methods on loaded instruments-----------------------
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int instrument = getInstrument(e.getKeyCode());
+        int noteNum = getNote(e.getKeyCode());
+        Note note = new Note(noteNum, 100, instrument, true);
+        ss.playNote(note);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int instrument = getInstrument(e.getKeyCode());
+        int noteNum = getNote(e.getKeyCode());
+        Note note = new Note(noteNum, 100, instrument, false);
+        ss.playNote(note);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (getMouseInstrument() != null)
+            getMouseInstrument().mouseDragged(e);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (getMouseInstrument() != null)
+            getMouseInstrument().mouseMoved(e);
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (getMouseInstrument() != null)
+            getMouseInstrument().mouseWheelMoved(e);
+    }
+    // ------------------End of call input methods on loaded instruments-----------------------
+
 }

@@ -5,15 +5,15 @@ import java.awt.event.*;
 /**
  * Handles the View of MVC, is the display and connection between input and output.
  */
-public class Window extends JPanel implements KeyboardListener, MouseWheelListener, MouseMotionListener {
+public class Window extends JPanel {
 
     private Controller controller;
     private JFrame frame;
+    private KeyboardManager keyboardManager;
 
     Window(Controller c){
 
-        KeyboardManager keyboardManager = new KeyboardManager();
-        keyboardManager.addListener(c);
+        keyboardManager = new KeyboardManager();
 
         controller = c;
 
@@ -30,12 +30,19 @@ public class Window extends JPanel implements KeyboardListener, MouseWheelListen
         frame.setVisible(true);
         frame.toFront();
 
-        frame.addMouseWheelListener(this);
-        frame.addMouseMotionListener(this);
-
-
     }
 
+    public void addMouseWheelListener(MouseWheelListener e){
+        frame.addMouseWheelListener(e);
+    }
+
+    public void addMouseMotionListener(MouseMotionListener e){
+        frame.addMouseMotionListener(e);
+    }
+
+    public void addKeyBoardListener(KeyboardListener e){
+        keyboardManager.addListener(e);
+    }
     //Would like a menu where you can choose to either use a premade loadout or create your own.
     // Menu: Choose loadout
     //      ->Piano
@@ -60,31 +67,6 @@ public class Window extends JPanel implements KeyboardListener, MouseWheelListen
         menuItem = new JMenuItem("Piano");
         loadoutMenu.add(menuItem);
         frame.setJMenuBar(menuBar);
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        controller.keyPressed(e);
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        controller.keyReleased(e);
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        controller.mouseDragged(e);
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        controller.mouseMoved(e);
-    }
-
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        controller.mouseWheelMoved(e);
     }
 
 }
