@@ -74,17 +74,17 @@ public class Window extends JPanel implements KeyboardListener, MouseWheelListen
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        //controller.mouseDragged(e);
+        controller.mouseDragged(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        //controller.mouseMoved(e);
+        controller.mouseMoved(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        //controller.mouseWheelMoved(e);
+        controller.mouseWheelMoved(e);
     }
 
 }

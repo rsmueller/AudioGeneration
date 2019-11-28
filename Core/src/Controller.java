@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * In an effort to switch over to MVC structure, controller will now control the flow of program
  * Window should just be displaying of stuff and grabbing input.
  */
-public class Controller implements Runnable, KeyboardListener{
+public class Controller implements Runnable, KeyboardListener, MouseMotionListener, MouseWheelListener{
 
     private SoundSynthesizer soundSynthesizer;
     private Thread mainThread;
@@ -30,8 +30,7 @@ public class Controller implements Runnable, KeyboardListener{
 
     @Override
     public void run() {
-        // Create new instrument
-        //loadedInstruments.add(new Piano(soundSynthesizer));
+        //Set loadout to piano
         Loadout piano = new Loadout("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\piano.layout");
         loadoutManager.setCurrentLoadout(piano);
     }
@@ -61,27 +60,21 @@ public class Controller implements Runnable, KeyboardListener{
         soundSynthesizer.playNote(note);
     }
 
-    //Dont currently have a solution for this since we want to possibly bind keys to other instruments
-    //Possibly a mouse_bound instrument per loadout defind at top of file.
-    /*
+
     @Override
     public void mouseDragged(MouseEvent e) {
-        for (InstrumentHandler instrument : loadedInstruments)
-            instrument.mouseDragged(e);
+        loadoutManager.getMouseInstrument().mouseDragged(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        for (InstrumentHandler instrument : loadedInstruments)
-            instrument.mouseMoved(e);
+        loadoutManager.getMouseInstrument().mouseMoved(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        for (InstrumentHandler instrument : loadedInstruments)
-            instrument.mouseWheelMoved(e);
+        loadoutManager.getMouseInstrument().mouseWheelMoved(e);
     }
-    */
     // ------------------End of call input methods on loaded instruments-----------------------
 
 

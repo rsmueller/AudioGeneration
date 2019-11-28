@@ -7,9 +7,9 @@ public class SoundSynthesizer {
     private Synthesizer synth;
     private MidiChannel[] channels;
     private Map<Integer, MidiChannel> instrumentChannelMap;
+    private InstrumentHandler mouseInstrument;
 
     SoundSynthesizer(){
-
         try {
             synth = MidiSystem.getSynthesizer();
             System.out.println("Synthesizer Latency: "+synth.getLatency());
@@ -29,6 +29,11 @@ public class SoundSynthesizer {
         channels = temp;
 
         instrumentChannelMap = new HashMap<Integer, MidiChannel>();
+    }
+
+    public void setMouseInstrument(InstrumentHandler instrumentHandler){
+        this.mouseInstrument = instrumentHandler;
+        addInstrument(instrumentHandler.getCode());
     }
 
     void addInstrument(int instrument){
@@ -53,9 +58,11 @@ public class SoundSynthesizer {
         instrumentChannelMap.remove(instrument);
     }
 
-    public void clearInstruments(){instrumentChannelMap.clear();}
+    public void clearInstruments(){
+        instrumentChannelMap.clear();}
 
     void playNote(Note note){
+
         int instrument = note.getInstrument();
         if (instrumentChannelMap.containsKey(instrument)) {
             MidiChannel channel = instrumentChannelMap.get(instrument);
@@ -70,33 +77,39 @@ public class SoundSynthesizer {
         }
     }
 
-    /*public void bend(InstrumentHandler instrument, int amount){ // outdated scroll wheel bend method
-        if (handlerChannelMap.containsKey(instrument)){
-            MidiChannel channel = handlerChannelMap.get(instrument);
-            if (instrument.bend + amount > 0 && instrument.bend + amount < 16383) {
-                instrument.bend += amount;
-            }
-            channel.setPitchBend(instrument.bend);
-            System.out.println(instrument.bend);
-        }
-    }*/
+    public void bend(int amount){ // outdated scroll wheel bend method
+        int mouseInstrumentCode = mouseInstrument.getCode();
 
-    /*
-    void setBend(int instrument, int amount){
-        if (instrumentChannelMap.containsKey(instrument)) {
-            MidiChannel channel = instrumentChannelMap.get(instrument);
-            instrument.bend = amount;
-            channel.setPitchBend(instrument.bend);
+        if (instrumentChannelMap.containsKey(mouseInstrumentCode)){
+            MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
+            if (mouseInstrument.bend + amount > 0 && mouseInstrument.bend + amount < 16383) {
+                mouseInstrument.bend += amount;
+            }
+            channel.setPitchBend(mouseInstrument.bend);
+            System.out.println(mouseInstrument.bend);
+        }
+    }
+
+
+    void setBend(int amount){
+        int mouseInstrumentCode = mouseInstrument.getCode();
+
+        if (instrumentChannelMap.containsKey(mouseInstrumentCode)) {
+            MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
+            mouseInstrument.bend = amount;
+            channel.setPitchBend(mouseInstrument.bend);
             //System.out.println(instrument.bend);
         }
     }
 
-    void resetBend(InstrumentHandler instrument) {
-        if (instrumentChannelMap.containsKey(instrument)) {
-            MidiChannel channel = instrumentChannelMap.get(instrument);
-            instrument.bend = 8192;
-            channel.setPitchBend(instrument.bend);
+    void resetBend(int instrument) {
+        int mouseInstrumentCode = mouseInstrument.getCode();
+
+        if (instrumentChannelMap.containsKey(mouseInstrumentCode)) {
+            MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
+            mouseInstrument.bend = 8192;
+            channel.setPitchBend(mouseInstrument.bend);
         }
-    }*/
+    }
 
 }

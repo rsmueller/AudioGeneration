@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -11,6 +12,7 @@ public class Loadout {
 
     private Dictionary<Integer, Integer[]> notes = new Hashtable<>();
     public Integer[] typesOfInstruments;
+    private InstrumentHandler mouseInstrument;
 
     public Loadout(String loadout){
         this(new File("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\piano.layout"));
@@ -20,6 +22,9 @@ public class Loadout {
         try {
             ArrayList<Integer> instruments = new ArrayList<Integer>();
             Scanner sc = new Scanner(loadout);
+            typesOfInstruments = new Integer[instruments.size()];
+            int mouseInstrCode = Integer.parseInt(sc.nextLine());
+            mouseInstrument = (InstrumentHandler) ((Class)LoadoutManager.getInstrumentClass(mouseInstrCode)).getConstructor(new Class[0]).newInstance();
             while (sc.hasNextLine()){
                 String line = sc.nextLine();
                 int space = line.indexOf(" ");
@@ -33,7 +38,6 @@ public class Loadout {
                 //key is KeyCode, 2nd is the note and instrument it is on
                 notes.put(keyCode, new Integer[]{note, instr});
             }
-            typesOfInstruments = new Integer[instruments.size()];
             instruments.toArray(typesOfInstruments);
         }catch(FileNotFoundException e){
             System.out.println("Error, layout file not found.");
@@ -43,6 +47,11 @@ public class Loadout {
         }catch(NumberFormatException e){
             System.out.println(".layout file not formatted correctly, crashed");
             System.exit(2);
+        } catch (InstantiationException e) {
+            System.out.println("Could not find instrument class");
+            e.printStackTrace();
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
@@ -53,6 +62,8 @@ public class Loadout {
     public int getInstrument(int keyCode){
         return notes.get(keyCode)[1];
     }
+
+    public InstrumentHandler getMouseInstrument(){return mouseInstrument;}
 
     //Test it works
     public static void main(String[] args) {

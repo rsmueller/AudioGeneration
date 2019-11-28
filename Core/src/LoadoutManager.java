@@ -28,9 +28,21 @@ public class LoadoutManager {
         return instrumentCodes.get(code);
     }
 
+    public static int getInstrumentCode(Class instrClass){
+        for (int code : instrumentCodes.keySet()){
+            if (instrumentCodes.get(code).equals(instrClass))
+                return code;
+        }
+        System.out.println("Instrument not in instrumentCodes, fatal error");
+        System.exit(3);
+        return -1;
+    }
+
     void setCurrentLoadout(Loadout loadout){
         currentLoadout = loadout;
         ss.clearInstruments();
+        ss.setMouseInstrument(loadout.getMouseInstrument());
+        loadout.getMouseInstrument().setSynth(ss);
         for (Integer instr : loadout.typesOfInstruments)
             ss.addInstrument(instr);
     }
@@ -41,5 +53,9 @@ public class LoadoutManager {
 
     public int getInstrument(int keyCode){
         return currentLoadout.getInstrument(keyCode);
+    }
+
+    public InstrumentHandler getMouseInstrument(){
+        return currentLoadout.getMouseInstrument();
     }
 }

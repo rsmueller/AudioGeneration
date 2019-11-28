@@ -14,4 +14,12 @@ public abstract class InstrumentHandler implements MouseWheelListener, MouseMoti
 
     protected String name;
 
+    public int getCode(){
+        return LoadoutManager.getInstrumentCode(this.getClass());
+    }
+
+    public void setSynth(SoundSynthesizer ss){
+        synth = ss;
+    }
+
 }
