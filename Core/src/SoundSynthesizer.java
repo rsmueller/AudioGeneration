@@ -52,6 +52,7 @@ public class SoundSynthesizer {
         }
         chosenChannel.programChange(instrument);
         instrumentChannelMap.put(instrument, chosenChannel);
+        System.out.println("Put an instrument "+instrument);
     }
 
     public void removeInstrument(int instrument){
@@ -71,9 +72,10 @@ public class SoundSynthesizer {
             } else {
                 channel.noteOff(note.getNumber(), note.getVelocity());
             }
-        }else{
-            String instrumentName = LoadoutManager.getInstrumentClass(instrument).getName();
-            System.out.println(instrumentName + " has no designated channel.");
+        }else {
+            Class instrClass = LoadoutManager.getInstrumentClass(instrument);
+            String instrumentName = instrClass.getName();
+            System.out.println(instrumentName + " has no designated midi channel in the synthesizer.");
         }
     }
 

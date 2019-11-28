@@ -48,6 +48,7 @@ public class KeyboardManager implements KeyListener {
         else
             pressedKeyCodes[keyCode] = false;
 
+
         for (KeyboardListener listener : listeners)
             listener.keyReleased(e);
     }

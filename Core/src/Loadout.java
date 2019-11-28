@@ -14,17 +14,19 @@ public class Loadout {
     public Integer[] typesOfInstruments;
     private InstrumentHandler mouseInstrument;
 
-    public Loadout(String loadout){
-        this(new File("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\piano.layout"));
-    }
-
     public Loadout(File loadout){
         try {
             ArrayList<Integer> instruments = new ArrayList<Integer>();
             Scanner sc = new Scanner(loadout);
             typesOfInstruments = new Integer[instruments.size()];
             int mouseInstrCode = Integer.parseInt(sc.nextLine());
-            mouseInstrument = (InstrumentHandler) ((Class)LoadoutManager.getInstrumentClass(mouseInstrCode)).getConstructor(new Class[0]).newInstance();
+
+            /*
+             * This line is a complicated way of creating an instance of a instrument handler from just the name of the class
+             * -1 means the loadout does not have an instrument that uses the mouse.
+             */
+            if(mouseInstrCode != -1)
+                mouseInstrument = (InstrumentHandler) ((Class)LoadoutManager.getInstrumentClass(mouseInstrCode)).getConstructor(new Class[0]).newInstance();
             while (sc.hasNextLine()){
                 String line = sc.nextLine();
                 int space = line.indexOf(" ");
@@ -38,7 +40,7 @@ public class Loadout {
                 //key is KeyCode, 2nd is the note and instrument it is on
                 notes.put(keyCode, new Integer[]{note, instr});
             }
-            instruments.toArray(typesOfInstruments);
+            typesOfInstruments = instruments.toArray(new Integer[instruments.size()]);
         }catch(FileNotFoundException e){
             System.out.println("Error, layout file not found.");
             System.out.println(e.getMessage());
@@ -56,19 +58,30 @@ public class Loadout {
     }
 
     public int getNote(int keyCode){
-        return notes.get(keyCode)[0];
+        try {
+            return notes.get(keyCode)[0];
+        }catch(NullPointerException e){
+            System.out.println("KeyCode "+keyCode+" not implemented on this instrument!");
+        }
+        return 0;
     }
 
     public int getInstrument(int keyCode){
-        return notes.get(keyCode)[1];
+        try {
+            return notes.get(keyCode)[1];
+        }catch(NullPointerException e){
+            System.out.println("KeyCode "+keyCode+" not implemented on this instrument!");
+        }
+        return 0;
     }
 
     public InstrumentHandler getMouseInstrument(){return mouseInstrument;}
 
     //Test it works
+    /*
     public static void main(String[] args) {
         File file = new File("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\piano.layout");
         Loadout l = new Loadout(file);
         System.out.println(l.getNote(10)); //should be 59
-    }
+    }*/
 }

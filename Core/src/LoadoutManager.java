@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class LoadoutManager {
 
     private static Map<Integer, Class> instrumentCodes = new HashMap<Integer, Class>() {{
         put(1, Piano.class);
-        //put(2, Guitar.class);
+        put(2, Guitar.class);
         //etc
     }};
 
@@ -24,10 +25,22 @@ public class LoadoutManager {
         this.ss = ss;
     }
 
+    /**
+     * Each instrument handler implementer has a designated code, hence instrumentCodes
+     * @param code for the instrument handler
+     * @return the Class obj of that instrument handler
+     */
     public static Class getInstrumentClass(int code){
         return instrumentCodes.get(code);
     }
 
+    /**
+     * A reverse lookup from the Hashmap,
+     * if there is a data struct makes for a two way lookup (i.e one can find the other easily)
+     * PLEASE replace if that is the case.
+     * @param instrClass Class obj you want to find the code for.
+     * @return Code for instrument handler
+     */
     public static int getInstrumentCode(Class instrClass){
         for (int code : instrumentCodes.keySet()){
             if (instrumentCodes.get(code).equals(instrClass))
@@ -38,13 +51,24 @@ public class LoadoutManager {
         return -1;
     }
 
-    void setCurrentLoadout(Loadout loadout){
+    private void setCurrentLoadout(Loadout loadout){
         currentLoadout = loadout;
         ss.clearInstruments();
-        ss.setMouseInstrument(loadout.getMouseInstrument());
-        loadout.getMouseInstrument().setSynth(ss);
-        for (Integer instr : loadout.typesOfInstruments)
+        InstrumentHandler mouseInstr = loadout.getMouseInstrument();
+        if (mouseInstr != null) {
+            ss.setMouseInstrument(mouseInstr);
+            mouseInstr.setSynth(ss);
+        }
+        for (Integer instr : loadout.typesOfInstruments) {
+            System.out.println("Adding instrument "+instr);
             ss.addInstrument(instr);
+        }
+    }
+
+    public void setToDefault(){
+        File layoutFile = new File("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\guitar.layout");
+        Loadout def = new Loadout(layoutFile);
+        setCurrentLoadout(def);
     }
 
     public int getNote(int keyCode){

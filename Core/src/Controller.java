@@ -30,9 +30,8 @@ public class Controller implements Runnable, KeyboardListener, MouseMotionListen
 
     @Override
     public void run() {
-        //Set loadout to piano
-        Loadout piano = new Loadout("C:\\Users\\thatg\\Documents\\GitHub\\AudioGeneration\\resources\\piano.layout");
-        loadoutManager.setCurrentLoadout(piano);
+        //Set loadout to default
+        loadoutManager.setToDefault();
     }
 
     void stop(){
@@ -63,17 +62,20 @@ public class Controller implements Runnable, KeyboardListener, MouseMotionListen
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        loadoutManager.getMouseInstrument().mouseDragged(e);
+        if (loadoutManager.getMouseInstrument() != null)
+            loadoutManager.getMouseInstrument().mouseDragged(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        loadoutManager.getMouseInstrument().mouseMoved(e);
+        if (loadoutManager.getMouseInstrument() != null)
+            loadoutManager.getMouseInstrument().mouseMoved(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        loadoutManager.getMouseInstrument().mouseWheelMoved(e);
+        if (loadoutManager.getMouseInstrument() != null)
+            loadoutManager.getMouseInstrument().mouseWheelMoved(e);
     }
     // ------------------End of call input methods on loaded instruments-----------------------
 
