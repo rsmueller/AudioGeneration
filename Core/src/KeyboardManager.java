@@ -9,7 +9,7 @@ public class KeyboardManager implements KeyListener {
 
     public KeyboardManager(){
         listeners = new ArrayList<KeyboardListener>();
-        pressedKeyCodes = new boolean[93];
+        pressedKeyCodes = new boolean[123]; // holding through F12
     }
 
     public void addListener(KeyboardListener listener){

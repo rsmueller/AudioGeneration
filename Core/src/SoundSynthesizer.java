@@ -9,6 +9,8 @@ public class SoundSynthesizer {
     private Map<Integer, MidiChannel> instrumentChannelMap;
     private InstrumentHandler mouseInstrument;
 
+    private Recording recording;
+
     SoundSynthesizer(){
         try {
             synth = MidiSystem.getSynthesizer();
@@ -29,6 +31,8 @@ public class SoundSynthesizer {
         channels = temp;
 
         instrumentChannelMap = new HashMap<Integer, MidiChannel>();
+
+        recording = new Recording();
     }
 
     public void setMouseInstrument(InstrumentHandler instrumentHandler){
@@ -63,7 +67,6 @@ public class SoundSynthesizer {
         instrumentChannelMap.clear();}
 
     void playNote(Note note){
-
         int instrument = note.getInstrument();
         if (instrumentChannelMap.containsKey(instrument)) {
             MidiChannel channel = instrumentChannelMap.get(instrument);
@@ -72,7 +75,8 @@ public class SoundSynthesizer {
             } else {
                 channel.noteOff(note.getNumber(), note.getVelocity());
             }
-        }else {
+            recording.addNote(note);
+        } else {
             Class instrClass = LoadoutManager.getInstrumentClass(instrument);
             String instrumentName = instrClass.getName();
             System.out.println(instrumentName + " has no designated midi channel in the synthesizer.");
@@ -88,6 +92,7 @@ public class SoundSynthesizer {
                 mouseInstrument.bend += amount;
             }
             channel.setPitchBend(mouseInstrument.bend);
+            recording.setBend(mouseInstrument.bend);
             System.out.println(mouseInstrument.bend);
         }
     }
@@ -100,6 +105,7 @@ public class SoundSynthesizer {
             MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
             mouseInstrument.bend = amount;
             channel.setPitchBend(mouseInstrument.bend);
+            recording.setBend(amount);
             //System.out.println(instrument.bend);
         }
     }
@@ -111,7 +117,12 @@ public class SoundSynthesizer {
             MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
             mouseInstrument.bend = 8192;
             channel.setPitchBend(mouseInstrument.bend);
+            recording.setBend(mouseInstrument.bend);
         }
+    }
+
+    public Recording getRecording() {
+        return recording;
     }
 
 }
