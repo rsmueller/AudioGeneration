@@ -90,17 +90,21 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
     @Override
     public void keyPressed(KeyEvent e) {
         int instrument = getInstrument(e.getKeyCode());
-        int noteNum = getNote(e.getKeyCode());
-        Note note = new Note(noteNum, 100, instrument, true);
-        ss.playNote(note);
+        if(instrument != 0) {
+            int noteNum = getNote(e.getKeyCode());
+            Note note = new Note(noteNum, 100, instrument, true);
+            ss.playNote(note);
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int instrument = getInstrument(e.getKeyCode());
-        int noteNum = getNote(e.getKeyCode());
-        Note note = new Note(noteNum, 100, instrument, false);
-        ss.playNote(note);
+        if(instrument != 0) {
+            int noteNum = getNote(e.getKeyCode());
+            Note note = new Note(noteNum, 100, instrument, false);
+            ss.playNote(note);
+        }
     }
 
     @Override

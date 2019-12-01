@@ -10,11 +10,13 @@ public class Controller implements Runnable{
     private SoundSynthesizer soundSynthesizer;
     private Thread mainThread;
     private LoadoutManager loadoutManager;
+    private PlaybackControls playbackControls;
 
     private Controller(){
         //Initializations first
         soundSynthesizer = new SoundSynthesizer();
         loadoutManager = new LoadoutManager(soundSynthesizer);
+        playbackControls = new PlaybackControls(soundSynthesizer);
         mainThread = new Thread(this);
         //Window does a lot of stuff, best have last initialized.
         //Window adds Controller to KeyboardManager listeners,
@@ -23,6 +25,7 @@ public class Controller implements Runnable{
         window.addKeyBoardListener(loadoutManager);
         window.addMouseMotionListener(loadoutManager);
         window.addMouseWheelListener(loadoutManager);
+        window.addKeyBoardListener(playbackControls);
 
         mainThread.start();
     }

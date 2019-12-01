@@ -2,7 +2,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseEvent;
 
-public class Piano extends InstrumentHandler{
+public class Piano extends InstrumentHandler {
 
     private int velocity = 100;
     private int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
@@ -33,4 +33,5 @@ public class Piano extends InstrumentHandler{
         velocity = ((int) ((e.getX()- minX) /(double) (maxX - minX) * 117)) + 10;
         System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
     }
+
 }

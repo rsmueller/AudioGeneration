@@ -26,6 +26,7 @@ public class PlaybackControls implements KeyboardListener {
     public void keyPressed(KeyEvent keyEvent) {
         // Play the recording when F1 is pressed
         if(keyEvent.getKeyCode() == KeyEvent.VK_F1) {
+            System.out.println("playback time");
             synth.getRecording().play();
         }
 

@@ -22,5 +22,4 @@ public abstract class InstrumentHandler implements MouseWheelListener, MouseMoti
         synth = ss;
     }
 
-    public abstract int getMidiInstrumentType();
 }
