@@ -1,5 +1,4 @@
 import javax.sound.midi.*;
-import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,14 +6,13 @@ public class SoundSynthesizer {
 
     private Synthesizer synth;
     private MidiChannel[] channels;
-    private Map<InstrumentHandler, MidiChannel> handlerChannelMap;
+    private Map<Integer, MidiChannel> instrumentChannelMap;
+    private InstrumentHandler mouseInstrument;
 
-    private Recording recording;
-
-    public SoundSynthesizer(){
-
+    SoundSynthesizer(){
         try {
             synth = MidiSystem.getSynthesizer();
+            System.out.println("Synthesizer Latency: "+synth.getLatency());
             synth.open();
         }catch(MidiUnavailableException midiError){
             System.out.println("Default Synthesizer is unavailable");
@@ -30,16 +28,20 @@ public class SoundSynthesizer {
             temp[i-1] = channels[i];
         channels = temp;
 
-        handlerChannelMap = new HashMap<InstrumentHandler, MidiChannel>();
-
-        recording = new Recording();
+        instrumentChannelMap = new HashMap<Integer, MidiChannel>();
     }
 
-    public void addInstrument(InstrumentHandler instrument){
-        int midiInstrumentType = instrument.getMidiInstrumentType();
+    public void setMouseInstrument(InstrumentHandler instrumentHandler){
+        this.mouseInstrument = instrumentHandler;
+        addInstrument(instrumentHandler.getCode());
+    }
+
+    void addInstrument(int instrument){
+        //int midiInstrumentType = instrument.getMidiInstrumentType();
+        //New system takes over, going straight to the integer representation of the instrument.
         MidiChannel chosenChannel = null;
         for (MidiChannel channel : channels){
-            if ( ! handlerChannelMap.containsValue(channel)){
+            if ( ! instrumentChannelMap.containsValue(channel)){
                 chosenChannel = channel;
                 break;
             }
@@ -48,59 +50,67 @@ public class SoundSynthesizer {
             System.out.println("Too many instruments loaded to add another instrument.");
             return;
         }
-        chosenChannel.programChange(midiInstrumentType);
-        handlerChannelMap.put(instrument, chosenChannel);
+        chosenChannel.programChange(instrument);
+        instrumentChannelMap.put(instrument, chosenChannel);
+        System.out.println("Put an instrument "+instrument);
     }
 
-    public void removeInstrument(InstrumentHandler instrument){
-        handlerChannelMap.remove(instrument);
+    public void removeInstrument(int instrument){
+        instrumentChannelMap.remove(instrument);
     }
 
-    public void playNote(InstrumentHandler instrument, Note note){
-        if (handlerChannelMap.containsKey(instrument)) {
-            MidiChannel channel = handlerChannelMap.get(instrument);
+    public void clearInstruments(){
+        instrumentChannelMap.clear();}
+
+    void playNote(Note note){
+
+        int instrument = note.getInstrument();
+        if (instrumentChannelMap.containsKey(instrument)) {
+            MidiChannel channel = instrumentChannelMap.get(instrument);
             if (note.isOn()) {
                 channel.noteOn(note.getNumber(), note.getVelocity());
             } else {
                 channel.noteOff(note.getNumber(), note.getVelocity());
             }
-            recording.addNote(note);
-        }else{
-            System.out.println(instrument.name + " has no designated channel.");
+        }else {
+            Class instrClass = LoadoutManager.getInstrumentClass(instrument);
+            String instrumentName = instrClass.getName();
+            System.out.println(instrumentName + " has no designated midi channel in the synthesizer.");
         }
     }
 
-    public Recording getRecording() {
-        return recording;
-    }
+    public void bend(int amount){ // outdated scroll wheel bend method
+        int mouseInstrumentCode = mouseInstrument.getCode();
 
-    /*public void bend(InstrumentHandler instrument, int amount){ // outdated scroll wheel bend method
-        if (handlerChannelMap.containsKey(instrument)){
-            MidiChannel channel = handlerChannelMap.get(instrument);
-            if (instrument.bend + amount > 0 && instrument.bend + amount < 16383) {
-                instrument.bend += amount;
+        if (instrumentChannelMap.containsKey(mouseInstrumentCode)){
+            MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
+            if (mouseInstrument.bend + amount > 0 && mouseInstrument.bend + amount < 16383) {
+                mouseInstrument.bend += amount;
             }
-            channel.setPitchBend(instrument.bend);
-            System.out.println(instrument.bend);
+            channel.setPitchBend(mouseInstrument.bend);
+            System.out.println(mouseInstrument.bend);
         }
-    }*/
+    }
 
-    public void setBend(InstrumentHandler instrument, int amount){
-        if (handlerChannelMap.containsKey(instrument)) {
-            MidiChannel channel = handlerChannelMap.get(instrument);
-            instrument.bend = amount;
-            channel.setPitchBend(instrument.bend);
-            recording.setBend(instrument.bend);
+
+    void setBend(int amount){
+        int mouseInstrumentCode = mouseInstrument.getCode();
+
+        if (instrumentChannelMap.containsKey(mouseInstrumentCode)) {
+            MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
+            mouseInstrument.bend = amount;
+            channel.setPitchBend(mouseInstrument.bend);
             //System.out.println(instrument.bend);
         }
     }
 
-    public void resetBend(InstrumentHandler instrument) {
-        if (handlerChannelMap.containsKey(instrument)) {
-            MidiChannel channel = handlerChannelMap.get(instrument);
-            instrument.bend = 8192;
-            channel.setPitchBend(instrument.bend);
-            recording.setBend(instrument.bend);
+    void resetBend(int instrument) {
+        int mouseInstrumentCode = mouseInstrument.getCode();
+
+        if (instrumentChannelMap.containsKey(mouseInstrumentCode)) {
+            MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
+            mouseInstrument.bend = 8192;
+            channel.setPitchBend(mouseInstrument.bend);
         }
     }
 

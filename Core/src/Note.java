@@ -1,8 +1,9 @@
 public class Note {
 
-    private boolean on;
     private int number;
     private int velocity;
+    private int instrument;
+    private boolean on;
 
     /**
      * Creates an immutable Note object
@@ -10,9 +11,10 @@ public class Note {
      * @param velocity
      * @param on is the note on or off.
      */
-    public Note(int number, int velocity, boolean on) {
+    public Note(int number, int velocity, int instrument, boolean on) {
         this.number = number;
         this.velocity = velocity;
+        this.instrument = instrument;
         this.on = on;
     }
 
@@ -26,6 +28,10 @@ public class Note {
 
     public int getVelocity() {
         return velocity;
+    }
+
+    public int getInstrument() {
+        return instrument;
     }
 
 }
