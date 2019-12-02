@@ -1,4 +1,5 @@
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -46,6 +47,10 @@ public class Controller implements Runnable{
             mainThread.join();
         }catch(Exception ignored){}
         System.exit(0);
+    }
+
+    public void onUserLoadoutChange(File selectedLoadout){
+        loadoutManager.setCurrentLoadout(new Loadout(selectedLoadout));
     }
 
 }
