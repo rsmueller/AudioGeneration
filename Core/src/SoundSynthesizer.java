@@ -55,6 +55,7 @@ public class SoundSynthesizer {
             return;
         }
         chosenChannel.programChange(instrument);
+        recording.setProgram(getChannelNum(chosenChannel), instrument);
         instrumentChannelMap.put(instrument, chosenChannel);
         System.out.println("Put an instrument "+instrument);
     }
@@ -75,7 +76,7 @@ public class SoundSynthesizer {
             } else {
                 channel.noteOff(note.getNumber(), note.getVelocity());
             }
-            recording.addNote(note);
+            recording.addNote(getChannelNum(channel), note);
         } else {
             Class instrClass = LoadoutManager.getInstrumentClass(instrument);
             String instrumentName = instrClass.getName();
@@ -92,7 +93,7 @@ public class SoundSynthesizer {
                 mouseInstrument.bend += amount;
             }
             channel.setPitchBend(mouseInstrument.bend);
-            recording.setBend(mouseInstrument.bend);
+            recording.setBend(getChannelNum(channel), mouseInstrument.bend);
             System.out.println(mouseInstrument.bend);
         }
     }
@@ -105,7 +106,7 @@ public class SoundSynthesizer {
             MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
             mouseInstrument.bend = amount;
             channel.setPitchBend(mouseInstrument.bend);
-            recording.setBend(amount);
+            recording.setBend(getChannelNum(channel), amount);
             //System.out.println(instrument.bend);
         }
     }
@@ -117,8 +118,18 @@ public class SoundSynthesizer {
             MidiChannel channel = instrumentChannelMap.get(mouseInstrumentCode);
             mouseInstrument.bend = 8192;
             channel.setPitchBend(mouseInstrument.bend);
-            recording.setBend(mouseInstrument.bend);
+            recording.setBend(getChannelNum(channel), mouseInstrument.bend);
         }
+    }
+
+    private int getChannelNum(MidiChannel channel) {
+        MidiChannel[] channels = synth.getChannels();
+        for(int i = 0; i < channels.length; i++) {
+            if(channel == channels[i]) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public Recording getRecording() {
