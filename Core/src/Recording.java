@@ -39,23 +39,29 @@ class Recording {
     }
 
     /**
+     * Begins this recording. Future notes will be offset from the current time.
+     */
+    public void start() {
+        startTime = Instant.now().toEpochMilli();;
+    }
+
+    /**
      * Adds the given note to the recording and creates a timestamp for it.
      *
      * @param note The note event to add to this recording.
      */
     public void addNote(Note note) {
-        long currentTime = Instant.now().toEpochMilli();
-        if(startTime == 0) {
-            startTime = currentTime;
-        }
+        if(startTime != 0) { // if the recording has started
+            long currentTime = Instant.now().toEpochMilli();
 
-        try {
-            ShortMessage message = noteMessage(note);
-            messages.add(message);
-            timestamps.add(currentTime - startTime);
-        } catch (InvalidMidiDataException e) {
-            // Should never be reached
-            e.printStackTrace();
+            try {
+                ShortMessage message = noteMessage(note);
+                messages.add(message);
+                timestamps.add(currentTime - startTime);
+            } catch (InvalidMidiDataException e) {
+                // Should never be reached
+                e.printStackTrace();
+            }
         }
     }
 
@@ -67,7 +73,7 @@ class Recording {
      * @param amount The amount to set pitch bend to.
      */
     public void setBend(int amount) {
-        if(startTime > 0) {
+        if(startTime != 0) { // if the recording has started
             long currentTime = Instant.now().toEpochMilli();
             try {
                 ShortMessage message = bendMessage(amount);
@@ -118,6 +124,15 @@ class Recording {
         } catch (IOException|InvalidMidiDataException e) {
             System.out.println("Could not save recording.");
         }
+    }
+
+    /**
+     * Clears this recording, removing all data.
+     */
+    public void clear() {
+        startTime = 0;
+        timestamps.clear();
+        messages.clear();
     }
 
     /**
