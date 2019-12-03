@@ -12,11 +12,11 @@ class Recording {
     // Timestamp of the first note in the recording
     private long startTime = 0;
 
-    private int currentChannel = 0;
+    private int currentTrack = 0;
 
     // Internal storage of notes and times
-    private List<ShortMessage> messages;
-    private List<Long> timestamps;
+    private List<List<ShortMessage>> messages;
+    private List<List<Long>> timestamps;
 
     private Sequencer sequencer;
 
@@ -24,8 +24,10 @@ class Recording {
      * Creates a new empty recording
      */
     Recording() {
-        messages = new ArrayList<ShortMessage>();
-        timestamps = new ArrayList<Long>();
+        messages = new ArrayList<List<ShortMessage>>();
+        timestamps = new ArrayList<List<Long>>();
+        messages.add(new ArrayList<ShortMessage>());
+        timestamps.add(new ArrayList<Long>());
 
         // Try to get the default synthesizer
         try {
@@ -39,40 +41,93 @@ class Recording {
     }
 
     /**
+     * Begins this recording. Future notes will be offset from the current time.
+     */
+    public void start() {
+        startTime = Instant.now().toEpochMilli();;
+    }
+
+    /**
      * Adds the given note to the recording and creates a timestamp for it.
      *
+     * @param channel The channel to add this note on.
      * @param note The note event to add to this recording.
      */
-    public void addNote(Note note) {
-        long currentTime = Instant.now().toEpochMilli();
-        if(startTime == 0) {
-            startTime = currentTime;
-        }
+    public void addNote(int channel, Note note) {
+        if(startTime != 0) { // if the recording has started
+            long currentTime = Instant.now().toEpochMilli();
 
-        try {
-            ShortMessage message = noteMessage(note);
-            messages.add(message);
-            timestamps.add(currentTime - startTime);
-        } catch (InvalidMidiDataException e) {
-            // Should never be reached
-            e.printStackTrace();
+            try {
+                ShortMessage message = noteMessage(channel, note);
+                messages.get(currentTrack).add(message);
+                timestamps.get(currentTrack).add(currentTime - startTime);
+            } catch (InvalidMidiDataException e) {
+                // Should never be reached
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * Adds the given bend amount to the recording and creates a timestamp for it.
      *
-     * Will not begin recording if it has not been started.
-     *
+     * @param channel The channel to set bend on.
      * @param amount The amount to set pitch bend to.
      */
-    public void setBend(int amount) {
-        if(startTime > 0) {
+    public void setBend(int channel, int amount) {
+        if(startTime != 0) { // if the recording has started
             long currentTime = Instant.now().toEpochMilli();
             try {
-                ShortMessage message = bendMessage(amount);
-                messages.add(message);
-                timestamps.add(currentTime - startTime);
+                ShortMessage message = bendMessage(channel, amount);
+                messages.get(currentTrack).add(message);
+                timestamps.get(currentTrack).add(currentTime - startTime);
+            } catch (InvalidMidiDataException e) {
+                // Should never be reached
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Adds the given program/instrument change to the recording and creates a timestamp for it.
+     *
+     * Will replace any other program changes at time 0 if recording has not started.
+     *
+     * @param channel The channel to set bend on.
+     * @param program The program to set the given channel to.
+     */
+    public void setProgram(int channel, int program) {
+        if(startTime == 0) { // if the recording has not started
+            List<ShortMessage> toRemove = new ArrayList<ShortMessage>();
+            for(int i = 0; i < messages.get(currentTrack).size(); i++) {
+                if(messages.get(currentTrack).get(i).getCommand() == ShortMessage.PROGRAM_CHANGE
+                        && timestamps.get(currentTrack).get(i) == 0) {
+                    toRemove.add(messages.get(currentTrack).get(i));
+                }
+            }
+
+            for(ShortMessage remove : toRemove) {
+                int index = messages.indexOf(remove);
+                if(index != -1) {
+                    messages.remove(index);
+                    timestamps.remove(index);
+                }
+            }
+
+            try {
+                ShortMessage message = programChangeMessage(channel, program);
+                messages.get(currentTrack).add(message);
+                timestamps.get(currentTrack).add(0L);
+            } catch (InvalidMidiDataException e) {
+                // Should never be reached
+                e.printStackTrace();
+            }
+        } else { // if the recording has started
+            long currentTime = Instant.now().toEpochMilli();
+            try {
+                ShortMessage message = programChangeMessage(channel, program);
+                messages.get(currentTrack).add(message);
+                timestamps.get(currentTrack).add(currentTime - startTime);
             } catch (InvalidMidiDataException e) {
                 // Should never be reached
                 e.printStackTrace();
@@ -98,8 +153,10 @@ class Recording {
      * @throws Exception if there are too many layers in the recording
      */
     public void beginLayer() throws Exception {
-        currentChannel++;
-        if(currentChannel < 16) { // MIDI has a max of 16 channels
+        if(currentTrack < 127) { // MIDI has a max of 128 tracks
+            currentTrack++;
+            messages.add(new ArrayList<ShortMessage>());
+            timestamps.add(new ArrayList<Long>());
             startTime = Instant.now().toEpochMilli();
         } else {
             // This should be handled in UI code
@@ -121,6 +178,19 @@ class Recording {
     }
 
     /**
+     * Clears this recording, removing all data.
+     */
+    public void clear() {
+        startTime = 0;
+        timestamps.clear();
+        messages.clear();
+
+        currentTrack = 0;
+        messages.add(new ArrayList<ShortMessage>());
+        timestamps.add(new ArrayList<Long>());
+    }
+
+    /**
      * Converts the recording to a MIDI sequence.
      *
      * @return a MIDI Sequence representing this recording.
@@ -128,11 +198,13 @@ class Recording {
      */
     private Sequence createSequence() throws InvalidMidiDataException {
         Sequence sequence = new Sequence(Sequence.SMPTE_30, 10);
-        Track track = sequence.createTrack();
-        for(int i = 0; i < messages.size(); i++) {
-            long tick = milliToTick(timestamps.get(i));
-            MidiEvent event = new MidiEvent(messages.get(i), tick);
-            track.add(event);
+        for(int trackNum = 0; trackNum < messages.size(); trackNum++) {
+            Track track = sequence.createTrack();
+            for (int i = 0; i < messages.get(trackNum).size(); i++) {
+                long tick = milliToTick(timestamps.get(trackNum).get(i));
+                MidiEvent event = new MidiEvent(messages.get(trackNum).get(i), tick);
+                track.add(event);
+            }
         }
         return sequence;
     }
@@ -144,9 +216,9 @@ class Recording {
      * @return a midi mesage describing the given note.
      * @throws InvalidMidiDataException if there is an error creating the message.
      */
-    private ShortMessage noteMessage(Note note) throws InvalidMidiDataException {
+    private ShortMessage noteMessage(int channel, Note note) throws InvalidMidiDataException {
         int on = note.isOn() ? ShortMessage.NOTE_ON : ShortMessage.NOTE_OFF;
-        return new ShortMessage(on, currentChannel, note.getNumber(), note.getVelocity());
+        return new ShortMessage(on, channel, note.getNumber(), note.getVelocity());
     }
 
     /**
@@ -156,7 +228,7 @@ class Recording {
      * @return a midi mesage describing the given bend amount.
      * @throws InvalidMidiDataException if there is an error creating the message.
      */
-    private ShortMessage bendMessage(int amount) throws InvalidMidiDataException {
+    private ShortMessage bendMessage(int channel, int amount) throws InvalidMidiDataException {
         if(amount < 0) {
             amount = 0;
         } else if(amount > MAX_14) {
@@ -168,7 +240,18 @@ class Recording {
         int lowValue = amount & 0x7F;
         int highValue = amount >> 7;
 
-        return new ShortMessage(ShortMessage.PITCH_BEND, currentChannel, lowValue, highValue);
+        return new ShortMessage(ShortMessage.PITCH_BEND, channel, lowValue, highValue);
+    }
+
+    /**
+     * Creates a MIDI message for setting the program.
+     *
+     * @param program the program to set the given channel to.
+     * @return a midi mesage describing the program change.
+     * @throws InvalidMidiDataException if there is an error creating the message.
+     */
+    private ShortMessage programChangeMessage(int channel, int program) throws InvalidMidiDataException {
+        return new ShortMessage(ShortMessage.PROGRAM_CHANGE, channel, program, 0);
     }
 
     /**

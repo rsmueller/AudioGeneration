@@ -11,24 +11,76 @@ public class Controller implements Runnable{
     private SoundSynthesizer soundSynthesizer;
     private Thread mainThread;
     private LoadoutManager loadoutManager;
-    private PlaybackControls playbackControls;
+
+    private Window window;
 
     private Controller(){
         //Initializations first
         soundSynthesizer = new SoundSynthesizer();
         loadoutManager = new LoadoutManager(soundSynthesizer);
-        playbackControls = new PlaybackControls(soundSynthesizer);
         mainThread = new Thread(this);
         //Window does a lot of stuff, best have last initialized.
         //Window adds Controller to KeyboardManager listeners,
 
-        Window window = new Window(this);
+        window = new Window(this);
         window.addKeyBoardListener(loadoutManager);
         window.addMouseMotionListener(loadoutManager);
         window.addMouseWheelListener(loadoutManager);
-        window.addKeyBoardListener(playbackControls);
 
         mainThread.start();
+    }
+
+    /**
+     * Begins the recording for the application's synthesizer.
+     *
+     * Called in reaction to UI event.
+     */
+    public void startRecording() {
+        soundSynthesizer.getRecording().start();
+    }
+
+    /**
+     * Begins a new layer for the application recording.
+     *
+     * Called in reaction to UI event.
+     */
+    public void startLayer() {
+        try {
+            soundSynthesizer.getRecording().play();
+            soundSynthesizer.getRecording().beginLayer();
+        } catch (Exception e) {
+            window.showError("Error", "Too many layers.");
+        }
+    }
+
+    /**
+     * Resets the application's recording.
+     *
+     * Called in reaction to UI event.
+     */
+    public void clearRecording() {
+        soundSynthesizer.getRecording().clear();
+    }
+
+    /**
+     * Plays the application's recording.
+     *
+     * Called in reaction to UI event.
+     */
+    public void playRecording() {
+        soundSynthesizer.getRecording().play();
+    }
+
+    /**
+     * Saves the application's recording to a file.
+     *
+     * Called in reaction to UI event.
+     */
+    public void saveRecording() {
+        File file = window.pickMIDIFile();
+        if(file != null) {
+            soundSynthesizer.getRecording().write(file);
+        }
     }
 
     // Temporary
@@ -42,7 +94,7 @@ public class Controller implements Runnable{
         loadoutManager.setToDefault();
     }
 
-    void stop(){
+    void stop() {
         try{
             mainThread.join();
         }catch(Exception ignored){}
