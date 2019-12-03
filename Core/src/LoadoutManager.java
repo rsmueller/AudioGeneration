@@ -17,7 +17,7 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
 
     private static Map<Integer, Class> instrumentCodes = new HashMap<Integer, Class>() {{
         put(1, Piano.class);
-        put(2, Guitar.class);
+        put(25, Guitar.class);
         //etc
     }};
 
@@ -53,7 +53,7 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
         return -1;
     }
 
-    private void setCurrentLoadout(Loadout loadout){
+    public void setCurrentLoadout(Loadout loadout){
         currentLoadout = loadout;
         ss.clearInstruments();
         InstrumentHandler mouseInstr = loadout.getMouseInstrument();

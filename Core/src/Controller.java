@@ -101,4 +101,8 @@ public class Controller implements Runnable{
         System.exit(0);
     }
 
+    public void onUserLoadoutChange(File selectedLoadout){
+        loadoutManager.setCurrentLoadout(new Loadout(selectedLoadout));
+    }
+
 }
