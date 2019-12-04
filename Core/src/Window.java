@@ -164,7 +164,15 @@ public class Window extends JPanel {
         chooser.setFileFilter(filter);
         int returnVal = chooser.showSaveDialog(frame);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
+            // add .midi extension if not entered
+            File selection = chooser.getSelectedFile();
+            String name = selection.getName();
+            String extension = name.substring(name.lastIndexOf('.') + 1);
+            if(!extension.equals("midi")) {
+                return new File(selection.getAbsolutePath() + ".midi");
+            } else {
+                return selection;
+            }
         } else {
             return null;
         }
