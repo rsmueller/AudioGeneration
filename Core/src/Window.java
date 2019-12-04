@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,12 +15,15 @@ public class Window extends JPanel {
     private Controller controller;
     private JFrame frame;
     private KeyboardManager keyboardManager;
+    private JLabel lblPressedKeys;
 
     Window(Controller c){
 
         keyboardManager = new KeyboardManager();
 
         controller = c;
+
+        lblPressedKeys = new JLabel();
 
         frame = new JFrame("Audio Generation");
         createMenu();
@@ -31,6 +35,10 @@ public class Window extends JPanel {
         });
         frame.add(this);
         frame.setSize(800,500);
+        frame.setLayout(new BorderLayout());
+
+        frame.add(lblPressedKeys, BorderLayout.CENTER);
+
         frame.setVisible(true);
         frame.toFront();
 
@@ -161,7 +169,15 @@ public class Window extends JPanel {
         chooser.setFileFilter(filter);
         int returnVal = chooser.showSaveDialog(frame);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
+            // add .midi extension if not entered
+            File selection = chooser.getSelectedFile();
+            String name = selection.getName();
+            String extension = name.substring(name.lastIndexOf('.') + 1);
+            if(!extension.equals("midi")) {
+                return new File(selection.getAbsolutePath() + ".midi");
+            } else {
+                return selection;
+            }
         } else {
             return null;
         }
@@ -200,5 +216,32 @@ public class Window extends JPanel {
         catch (NullPointerException e){
             System.out.println("Loadouts folder empty, please re-download or create loadout files.");
         }
+    }
+
+    private final int LBL_PRESSED_LEYS_MAX_LINES = 5;
+
+    //Solved multiline problem with
+    //this stack overflow solution
+    //https://stackoverflow.com/questions/2152742/java-swing-multiline-labels
+    public void displayKeyPress(Note note, int keyCode){
+        String prevText = lblPressedKeys.getText();
+        if (prevText.equals(""))
+            prevText = "<br>";
+        String[] lines = prevText.split("<br>");
+        System.out.println("Current lines: "+lines.length);
+        if (lines.length > LBL_PRESSED_LEYS_MAX_LINES){
+            StringBuilder temp = new StringBuilder();
+            int start_position = lines.length - LBL_PRESSED_LEYS_MAX_LINES;
+            for (int i = start_position; i < lines.length; i++) {
+                temp.append(lines[i] + "<br>");
+            }
+            prevText = temp.toString();
+        }
+        String instrumentName;
+        instrumentName = LoadoutManager.getInstrumentClass(note.getInstrument()).getName();
+        String text = String.format(
+                "<html>%sKeycode: %s Note: %s Instrument: %s<br>",
+                prevText, keyCode, note.getNumber(), instrumentName);
+        lblPressedKeys.setText(text);
     }
 }

@@ -18,7 +18,7 @@ public class Controller implements Runnable{
     private Controller(){
         //Initializations first
         soundSynthesizer = new SoundSynthesizer();
-        loadoutManager = new LoadoutManager(soundSynthesizer);
+        loadoutManager = new LoadoutManager(soundSynthesizer, this);
         mainThread = new Thread(this);
         //Window does a lot of stuff, best have last initialized.
         //Window adds Controller to KeyboardManager listeners,
@@ -117,5 +117,9 @@ public class Controller implements Runnable{
 
     public void deleteLoadouts(){
         System.out.println("Deleting loadouts");
+    }
+
+    public void displayKeyPress(Note note, int keyCode){
+        window.displayKeyPress(note, keyCode);
     }
 }
