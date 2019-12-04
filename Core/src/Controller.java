@@ -1,5 +1,6 @@
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -105,4 +106,16 @@ public class Controller implements Runnable{
         loadoutManager.setCurrentLoadout(new Loadout(selectedLoadout));
     }
 
+    public void createNewLoadout() throws FileNotFoundException {
+        System.out.println("Opening new window");
+        AddLoadoutWindow add = new AddLoadoutWindow();
+        add.pack();
+        add.setVisible(true);
+        while (add.isVisible()){}
+        window.updateLoadouts();
+    }
+
+    public void deleteLoadouts(){
+        System.out.println("Deleting loadouts");
+    }
 }

@@ -14,7 +14,7 @@ public class Loadout {
     private InstrumentHandler mouseInstrument;
 
     /**
-     * A loadout is loaded from a .loadout file.
+     * A loadout is loaded from a .layout file.
      * Uses a scanner to read through each line and saves the keycode
      * notes and instruments for each keycode to this instance.
      * @param loadout
