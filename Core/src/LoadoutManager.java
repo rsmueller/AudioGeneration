@@ -13,6 +13,7 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
 
     private Loadout currentLoadout;
     private SoundSynthesizer ss;
+    private Controller controller;
 
 
     private static Map<Integer, Class> instrumentCodes = new HashMap<Integer, Class>() {{
@@ -23,12 +24,14 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
 
 
     //Has to update ss when the loadout is changed.
-    public LoadoutManager(SoundSynthesizer ss){
+    public LoadoutManager(SoundSynthesizer ss, Controller controller){
         this.ss = ss;
+        this.controller = controller;
     }
 
     /**
      * Each instrument handler implementer has a designated code, hence instrumentCodes
+     *
      * @param code for the instrument handler
      * @return the Class obj of that instrument handler
      */
@@ -94,6 +97,7 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
             int noteNum = getNote(e.getKeyCode());
             Note note = new Note(noteNum, 100, instrument, true);
             ss.playNote(note);
+            controller.displayKeyPress(note, e.getKeyCode());
         }
     }
 
