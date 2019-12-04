@@ -191,6 +191,15 @@ class Recording {
     }
 
     /**
+     * Determines whether the recording has started.
+     *
+     * @return true if the recording has started, false otherwise.
+     */
+    public boolean isRecording() {
+        return startTime != 0;
+    }
+
+    /**
      * Converts the recording to a MIDI sequence.
      *
      * @return a MIDI Sequence representing this recording.
