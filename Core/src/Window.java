@@ -3,6 +3,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,19 +81,15 @@ public class Window extends JPanel {
 
         List<String> results = new ArrayList<String>();
 
-        File resources = new File("resources");
-        File[] loadoutFiles = resources.listFiles();
-        loadouts = new JMenuItem[loadoutFiles.length];
-        for (int i = 0; i < loadoutFiles.length; i++) {
-            String fileName = loadoutFiles[i].getName();
-            File file = loadoutFiles[i];
-            loadouts[i] = new JMenuItem(new AbstractAction(fileName) {
-                public void actionPerformed(ActionEvent e) {
-                    controller.onUserLoadoutChange(file);
-                }
-            });
-            loadoutMenu.add(loadouts[i]);
-        }
+        updateLoadouts();
+
+        menuItem = new JMenuItem("Create New...");
+        menuItem.addActionListener(e -> {
+            try {
+                controller.createNewLoadout();
+            } catch (FileNotFoundException ex) {}
+        });
+        loadoutMenu.add(menuItem);
 
         menuBar.add(makeRecordingMenu());
 
@@ -196,6 +193,31 @@ public class Window extends JPanel {
         JOptionPane.showMessageDialog(frame, error, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    public void updateLoadouts(){
+        int items = loadoutMenu.getItemCount()-1;
+        for (int i = 0; i < items; i++){
+            loadoutMenu.remove(0);
+        }
+        File resources = new File("resources");
+        File[] loadoutFiles = resources.listFiles();
+        try {
+            loadouts = new JMenuItem[loadoutFiles.length];
+            for (int i = 0; i < loadoutFiles.length; i++) {
+                String fileName = loadoutFiles[i].getName();
+                File file = loadoutFiles[i];
+                loadouts[i] = new JMenuItem(new AbstractAction(fileName) {
+                    public void actionPerformed(ActionEvent e) {
+                        controller.onUserLoadoutChange(file);
+                    }
+                });
+                loadoutMenu.add(loadouts[i], i);
+            }
+        }
+        catch (NullPointerException e){
+            System.out.println("Loadouts folder empty, please re-download or create loadout files.");
+        }
+    }
+
     private final int LBL_PRESSED_LEYS_MAX_LINES = 5;
 
     //Solved multiline problem with
@@ -222,5 +244,4 @@ public class Window extends JPanel {
                 prevText, keyCode, note.getNumber(), instrumentName);
         lblPressedKeys.setText(text);
     }
-
 }
