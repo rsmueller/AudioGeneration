@@ -30,7 +30,7 @@ public class Window extends JPanel {
         lblPressedKeys = new JLabel();
         lblIsRecording = new JLabel();
 
-        frame = new JFrame("Audio Generation");
+        frame = new JFrame("Instrument Player");
         createMenuBar();
         frame.addKeyListener(keyboardManager);
         frame.addWindowListener(new WindowAdapter() {
