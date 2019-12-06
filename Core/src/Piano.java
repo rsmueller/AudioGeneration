@@ -9,7 +9,6 @@ public class Piano extends InstrumentHandler {
     //Cant have anything passed to constructor.
     public Piano() {
         name = "Piano";
-        velocity = 100;
     }
 
     @Override
@@ -25,13 +24,13 @@ public class Piano extends InstrumentHandler {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        int maxY = 992;
+        int maxY = Window.height - 8; //8 less than height
         int minY = 30;
         synth.setBend((int) ((maxY - minY -(e.getY() - minY)) / (double) (maxY - minY) * 16383));
-        int maxX = 492;
+        int maxX = Window.width - 8; //8 less than width
         int minX = 7;
         velocity = ((int) ((e.getX()- minX) /(double) (maxX - minX) * 117)) + 10;
-        System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
+        //System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
     }
 
 }

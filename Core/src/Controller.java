@@ -38,6 +38,7 @@ public class Controller implements Runnable{
      */
     public void startRecording() {
         soundSynthesizer.getRecording().start();
+        showIsRecording(true);
     }
 
     /**
@@ -61,6 +62,7 @@ public class Controller implements Runnable{
      */
     public void clearRecording() {
         soundSynthesizer.getRecording().clear();
+        showIsRecording(false);
     }
 
     /**
@@ -119,7 +121,19 @@ public class Controller implements Runnable{
         System.out.println("Deleting loadouts");
     }
 
+    /**
+     * Display a keypress to the view
+     * @param note
+     * @param keyCode
+     */
     public void displayKeyPress(Note note, int keyCode){
         window.displayKeyPress(note, keyCode);
+    }
+
+    /**
+     * Display if recording or not to view
+     */
+    public void showIsRecording(boolean isRecording){
+        window.showIsRecording(isRecording);
     }
 }

@@ -16,6 +16,10 @@ public class Window extends JPanel {
     private JFrame frame;
     private KeyboardManager keyboardManager;
     private JLabel lblPressedKeys;
+    private JLabel lblIsRecording;
+    private final int LBL_PRESSED_LEYS_MAX_LINES = 10;
+    public static int width = 300;
+    public static int height = 500;
 
     Window(Controller c){
 
@@ -24,9 +28,10 @@ public class Window extends JPanel {
         controller = c;
 
         lblPressedKeys = new JLabel();
+        lblIsRecording = new JLabel();
 
         frame = new JFrame("Audio Generation");
-        createMenu();
+        createMenuBar();
         frame.addKeyListener(keyboardManager);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e){
@@ -34,10 +39,11 @@ public class Window extends JPanel {
             }
         });
         frame.add(this);
-        frame.setSize(800,500);
+        frame.setSize(width,height);
         frame.setLayout(new BorderLayout());
 
-        frame.add(lblPressedKeys, BorderLayout.CENTER);
+        frame.add(lblPressedKeys, BorderLayout.SOUTH);
+        frame.add(lblIsRecording, BorderLayout.NORTH);
 
         frame.setVisible(true);
         frame.toFront();
@@ -71,7 +77,10 @@ public class Window extends JPanel {
     JMenuItem[] loadouts;
 
 
-    private void createMenu(){
+    /**
+     * Creates the menu bar for the application
+     */
+    private void createMenuBar(){
         menuBar = new JMenuBar();
         loadoutMenu = new JMenu("Loadout");
         loadoutMenu.getAccessibleContext().setAccessibleDescription(
@@ -193,6 +202,10 @@ public class Window extends JPanel {
         JOptionPane.showMessageDialog(frame, error, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Creates the loadout menu which the user can use to select a loadout to play.
+     * Checks resources file and creates a menu item for each .loadout file.
+     */
     public void updateLoadouts(){
         int items = loadoutMenu.getItemCount()-1;
         for (int i = 0; i < items; i++){
@@ -203,7 +216,7 @@ public class Window extends JPanel {
         try {
             loadouts = new JMenuItem[loadoutFiles.length];
             for (int i = 0; i < loadoutFiles.length; i++) {
-                String fileName = loadoutFiles[i].getName();
+                String fileName = loadoutFiles[i].getName().split("\\.")[0];
                 File file = loadoutFiles[i];
                 loadouts[i] = new JMenuItem(new AbstractAction(fileName) {
                     public void actionPerformed(ActionEvent e) {
@@ -218,7 +231,6 @@ public class Window extends JPanel {
         }
     }
 
-    private final int LBL_PRESSED_LEYS_MAX_LINES = 5;
 
     //Solved multiline problem with
     //this stack overflow solution
@@ -243,5 +255,17 @@ public class Window extends JPanel {
                 "<html>%sKeycode: %s Note: %s Instrument: %s<br>",
                 prevText, keyCode, note.getNumber(), instrumentName);
         lblPressedKeys.setText(text);
+    }
+
+    /**
+     * Display if recording to user
+     * @param isRecording
+     */
+    public void showIsRecording(boolean isRecording){
+        if (isRecording){
+            lblIsRecording.setText("Recording...");
+        }else{
+            lblIsRecording.setText("");
+        }
     }
 }
