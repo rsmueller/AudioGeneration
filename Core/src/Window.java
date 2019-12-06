@@ -107,6 +107,14 @@ public class Window extends JPanel {
         });
         loadoutMenu.add(menuItem);
 
+        menuItem = new JMenuItem("Edit/Delete Loadouts");
+        menuItem.addActionListener(e -> {
+            try {
+                controller.editDeleteLoadout();
+            } catch (FileNotFoundException ex) {}
+        });
+        loadoutMenu.add(menuItem);
+
         menuBar.add(makeRecordingMenu());
 
         frame.setJMenuBar(menuBar);
@@ -214,7 +222,7 @@ public class Window extends JPanel {
      * Checks resources file and creates a menu item for each .loadout file.
      */
     public void updateLoadouts(){
-        int items = loadoutMenu.getItemCount()-1;
+        int items = loadoutMenu.getItemCount()-2;
         for (int i = 0; i < items; i++){
             loadoutMenu.remove(0);
         }
