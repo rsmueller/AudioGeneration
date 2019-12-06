@@ -20,6 +20,10 @@ public class Controller implements Runnable{
         soundSynthesizer = new SoundSynthesizer();
         loadoutManager = new LoadoutManager(soundSynthesizer, this);
         mainThread = new Thread(this);
+
+        //Set loadout to default
+        loadoutManager.setToDefault();
+
         //Window does a lot of stuff, best have last initialized.
         //Window adds Controller to KeyboardManager listeners,
 
@@ -93,8 +97,7 @@ public class Controller implements Runnable{
 
     @Override
     public void run() {
-        //Set loadout to default
-        loadoutManager.setToDefault();
+
     }
 
     void stop() {
