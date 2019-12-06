@@ -4,7 +4,6 @@ import java.awt.event.MouseEvent;
 
 public class Piano extends InstrumentHandler {
 
-    private int velocity = 100;
     private int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
 
     //Cant have anything passed to constructor.
@@ -25,14 +24,13 @@ public class Piano extends InstrumentHandler {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        int maxY = 992;
+        int maxY = Window.height - 8; //8 less than height
         int minY = 30;
         synth.setBend((int) ((maxY - minY -(e.getY() - minY)) / (double) (maxY - minY) * 16383));
-        System.out.println(e.getY());
-        int maxX = 492;
+        int maxX = Window.width - 8; //8 less than width
         int minX = 7;
         velocity = ((int) ((e.getX()- minX) /(double) (maxX - minX) * 117)) + 10;
-        System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
+        //System.out.println(((int) ((e.getX()-minX) /(double) (maxX - minX) * 90)) + 10);
     }
 
 }

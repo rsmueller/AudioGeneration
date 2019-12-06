@@ -12,6 +12,8 @@ public abstract class InstrumentHandler implements MouseWheelListener, MouseMoti
 
     protected SoundSynthesizer synth;
 
+    protected int velocity = 100;
+
     protected String name;
 
     public int getCode(){

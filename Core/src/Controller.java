@@ -38,6 +38,7 @@ public class Controller implements Runnable{
      */
     public void startRecording() {
         soundSynthesizer.getRecording().start();
+        showIsRecording(true);
     }
 
     /**
@@ -61,6 +62,7 @@ public class Controller implements Runnable{
      */
     public void clearRecording() {
         soundSynthesizer.getRecording().clear();
+        showIsRecording(false);
     }
 
     /**
@@ -124,5 +126,11 @@ public class Controller implements Runnable{
         ED.setVisible(true);
         while (ED.isVisible()){}
         window.updateLoadouts();
+
+    /**
+     * Display if recording or not to view
+     */
+    public void showIsRecording(boolean isRecording){
+        window.showIsRecording(isRecording);
     }
 }
