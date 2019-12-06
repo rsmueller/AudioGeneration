@@ -6,12 +6,6 @@ public class AddKeyWindow extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextPane keyOut;
-    private JTextField noteNum;
-    private JTextField instNum;
-    private JTextPane noteNumberTextPane;
-    private JTextPane instrumentNumberTextPane;
-    private JTextField keyNum;
     private JList keyListW;
     private JList noteListW;
     private JList instListW;
@@ -102,7 +96,7 @@ public class AddKeyWindow extends JDialog {
     }
 
     private void onOK() {
-        noteList.add(new int[]{Integer.parseInt(keyNum.getText()), Integer.parseInt(noteNum.getText()), Integer.parseInt(instNum.getText())});
+        noteList.add(new int[]{keyListW.getSelectedIndices()[0], noteListW.getSelectedIndices()[0] + 21, instListW.getSelectedIndices()[0] + 1});
         dispose();
     }
 
