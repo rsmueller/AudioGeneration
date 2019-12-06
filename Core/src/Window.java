@@ -48,6 +48,13 @@ public class Window extends JPanel {
         frame.setVisible(true);
         frame.toFront();
 
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                width = frame.getWidth();
+                height = frame.getHeight();
+            }
+        });
+
     }
 
     public void addMouseWheelListener(MouseWheelListener e){
