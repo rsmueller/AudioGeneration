@@ -12,7 +12,11 @@ public class AddKeyWindow extends JDialog {
     private ArrayList<int[]> noteList;
     private String[] noteCodes = new String[88];
 
-    public AddKeyWindow(ArrayList<int[]> nl) {
+    public AddKeyWindow(ArrayList<int[]> nl){
+        new AddKeyWindow(nl, -1);
+    }
+
+    public AddKeyWindow(ArrayList<int[]> nl, int index) {
         noteList = nl;
         setContentPane(contentPane);
         setModal(true);
@@ -66,6 +70,12 @@ public class AddKeyWindow extends JDialog {
         keyListW.setListData(keyCodes);
         noteListW.setListData(noteCodes);
         instListW.setListData(instCodes);
+
+        if (index != -1){
+            keyListW.setSelectedIndex(noteList.get(index)[0]);
+            noteListW.setSelectedIndex(noteList.get(index)[1]-21);
+            instListW.setSelectedIndex(noteList.get(index)[2]-1);
+        }
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
