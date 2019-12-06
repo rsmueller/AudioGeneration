@@ -95,7 +95,11 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
         int instrument = getInstrument(e.getKeyCode());
         if(instrument != 0) {
             int noteNum = getNote(e.getKeyCode());
-            Note note = new Note(noteNum, 100, instrument, true);
+            int velocity = 100;
+            InstrumentHandler ih = getMouseInstrument();
+            if (ih != null)
+                velocity = ih.velocity;
+            Note note = new Note(noteNum, velocity, instrument, true);
             ss.playNote(note);
             controller.displayKeyPress(note, e.getKeyCode());
         }

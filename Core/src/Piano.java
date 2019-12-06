@@ -4,12 +4,12 @@ import java.awt.event.MouseEvent;
 
 public class Piano extends InstrumentHandler {
 
-    private int velocity = 100;
     private int key = 0; //0 is key of C, adding and subtracting by one move the key center chromatically
 
     //Cant have anything passed to constructor.
     public Piano() {
         name = "Piano";
+        velocity = 100;
     }
 
     @Override
