@@ -107,19 +107,22 @@ public class Controller implements Runnable{
     }
 
     public void createNewLoadout() throws FileNotFoundException {
-        System.out.println("Opening new window");
-        AddLoadoutWindow add = new AddLoadoutWindow();
+        AddLoadoutWindow add = new AddLoadoutWindow(false, "");
         add.pack();
         add.setVisible(true);
         while (add.isVisible()){}
         window.updateLoadouts();
     }
 
-    public void deleteLoadouts(){
-        System.out.println("Deleting loadouts");
-    }
-
     public void displayKeyPress(Note note, int keyCode){
         window.displayKeyPress(note, keyCode);
+    }
+
+    public void editDeleteLoadout() throws FileNotFoundException{
+        EditDeleteWindow ED = new EditDeleteWindow();
+        ED.pack();
+        ED.setVisible(true);
+        while (ED.isVisible()){}
+        window.updateLoadouts();
     }
 }

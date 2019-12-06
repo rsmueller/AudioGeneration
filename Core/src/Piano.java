@@ -28,6 +28,7 @@ public class Piano extends InstrumentHandler {
         int maxY = 992;
         int minY = 30;
         synth.setBend((int) ((maxY - minY -(e.getY() - minY)) / (double) (maxY - minY) * 16383));
+        System.out.println(e.getY());
         int maxX = 492;
         int minX = 7;
         velocity = ((int) ((e.getX()- minX) /(double) (maxX - minX) * 117)) + 10;

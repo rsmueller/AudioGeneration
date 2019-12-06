@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class AddLoadoutWindow extends JDialog {
     String[] columnNames = {"Key Number", "Instrument", "Note Number"};
@@ -12,7 +13,7 @@ public class AddLoadoutWindow extends JDialog {
     private JPanel MouseCheck;
     private JPanel KeyInput;
     private JTextPane nameTextPane;
-    private JCheckBox mouseCheck;
+    private JTextField mouseCheck;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField loadoutName;
@@ -20,14 +21,38 @@ public class AddLoadoutWindow extends JDialog {
     private JList keyTable;
     private JPanel BottomButtons;
     private JButton deleteKey;
+    private JTextPane mouseTextPane;
+    private JButton editKey;
     private ArrayList<int[]> noteList = new ArrayList<int[]>();
-
+    private boolean edit;
 
     public AddLoadoutWindow() throws FileNotFoundException{
+        new AddLoadoutWindow(false, "");
+    }
+
+    public AddLoadoutWindow(Boolean e, String name) throws FileNotFoundException{
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         updateList();
+        edit = e;
+
+        if (edit){
+            loadoutName.setText(name.split("\\.")[0]);
+            Scanner s = new Scanner(new File(String.format("temp\\%s", name)));
+            mouseCheck.setText(s.nextLine());
+
+            while (s.hasNext()){
+                int[] tempKey = new int[3];
+                String[] line = s.nextLine().split(" ");
+                for (int i = 0; i < 3; i++){
+                    tempKey[i] = Integer.parseInt(line[i]);
+                }
+                noteList.add(tempKey);
+            }
+            updateList();
+        }
+
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -47,7 +72,7 @@ public class AddLoadoutWindow extends JDialog {
 
         addKey.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                AddKeyWindow keyWin = new AddKeyWindow(noteList);
+                AddKeyWindow keyWin = new AddKeyWindow(noteList, -1);
                 keyWin.pack();
                 keyWin.setVisible(true);
                 while (keyWin.isVisible()){}
@@ -56,13 +81,20 @@ public class AddLoadoutWindow extends JDialog {
         });
 
         deleteKey.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
-                int offset = 0;
+                deleteKeys();
+            }
+        });
+
+        editKey.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 for (int i : keyTable.getSelectedIndices()) {
-                    noteList.remove(i-offset);
-                    offset += 1;
+                    AddKeyWindow keyWin = new AddKeyWindow(noteList, i);
+                    keyWin.pack();
+                    keyWin.setVisible(true);
+                    while (keyWin.isVisible()) {}
                 }
+                deleteKeys();
                 updateList();
             }
         });
@@ -92,17 +124,23 @@ public class AddLoadoutWindow extends JDialog {
             System.out.println();
         }
 
-        File loadout = new File("resources/" + loadoutName.getText() + ".layout");
-        PrintWriter pw = new PrintWriter(loadout);
-        if (mouseCheck.isSelected()){
-            pw.println("1");
+        File loadout;
+        if (!edit) {
+            loadout = new File("resources/" + loadoutName.getText() + ".layout");
         } else {
-            pw.println("-1");
+            loadout = new File("temp/" + loadoutName.getText() + ".layout");
+        }
+        PrintWriter pw = new PrintWriter(loadout);
+        if (mouseCheck.getText().equals("")){
+            pw.println(-1);
+        } else {
+            pw.println(mouseCheck.getText());
         }
 
         for (int[] ints : noteList) {
             pw.println(String.format("%d %d %d", ints[0], ints[1], ints[2]));
         }
+
         pw.close();
         dispose();
     }
@@ -123,6 +161,15 @@ public class AddLoadoutWindow extends JDialog {
         }
 
         keyTable.setListData(listString);
+    }
+
+    private void deleteKeys(){
+        int offset = 0;
+        for (int i : keyTable.getSelectedIndices()) {
+            noteList.remove(i-offset);
+            offset += 1;
+        }
+        updateList();
     }
 
     public static void main(String[] args) throws FileNotFoundException {
