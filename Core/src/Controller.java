@@ -120,12 +120,18 @@ public class Controller implements Runnable{
         window.displayKeyPress(note, keyCode);
     }
 
-    public void editDeleteLoadout() throws FileNotFoundException{
+    public void editDeleteLoadout() throws FileNotFoundException {
         EditDeleteWindow ED = new EditDeleteWindow();
         ED.pack();
         ED.setVisible(true);
-        while (ED.isVisible()){}
+        while (ED.isVisible()) {
+        }
         window.updateLoadouts();
+        for (File f : new File("temp").listFiles()) {
+            f.delete();
+        }
+        new File("temp").delete();
+    }
 
     /**
      * Display if recording or not to view
