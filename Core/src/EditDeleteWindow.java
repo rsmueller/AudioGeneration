@@ -29,13 +29,17 @@ public class EditDeleteWindow extends JDialog {
                 pw.println(s.nextLine());
             }
             pw.close();
+            s.close();
         }
 
         fileList.setListData(temp.list());
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /*resources.delete();
+                for (File f : resources.listFiles()){
+                    f.delete();
+                }
+                resources.delete();
 
                 for (File file : temp.listFiles()){
                     try {
@@ -46,22 +50,17 @@ public class EditDeleteWindow extends JDialog {
                             pw.println(s.nextLine());
                         }
                         pw.close();
+                        s.close();
                     } catch (FileNotFoundException ex) {
                         ex.printStackTrace();
                     }
                 }
-                temp.delete();*/
-                resources.renameTo(new File("temp2"));
-                temp.renameTo(new File("resources"));
-                resources.delete();
-
                 onOK();
             }
         });
 
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                temp.delete();
                 onCancel();
             }
         });
@@ -92,7 +91,6 @@ public class EditDeleteWindow extends JDialog {
                 setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                temp.delete();
                 onCancel();
             }
         });
@@ -100,7 +98,6 @@ public class EditDeleteWindow extends JDialog {
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                temp.delete();
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);

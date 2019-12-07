@@ -130,6 +130,11 @@ public class Controller implements Runnable{
         while (ED.isVisible()) {
         }
         window.updateLoadouts();
+        for (File f : new File("temp").listFiles()) {
+            f.delete();
+        }
+        new File("temp").delete();
+
     }
 
     /**
