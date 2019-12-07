@@ -46,6 +46,7 @@ public class Loadout {
                 //key is KeyCode, 2nd is the note and instrument it is on
                 notes.put(keyCode, new Integer[]{note, instr});
             }
+            sc.close();
             typesOfInstruments = instruments.toArray(new Integer[0]);
         }catch(FileNotFoundException e){
             System.out.println("Error, layout file not found.");

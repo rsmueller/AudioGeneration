@@ -1,5 +1,8 @@
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -70,8 +73,66 @@ public class LoadoutManager implements KeyboardListener, MouseMotionListener, Mo
         }
     }
 
-    public void setToDefault(){
-        File layoutFile = new File("resources\\guitar.layout");
+    public void setToDefault() {
+
+        File layoutFile = new File("resources\\piano.layout");
+        if ( ! layoutFile.exists()) {
+            //Create resources directory if doesnt exist
+            if ( ! (new File("resources").exists())) {
+                File resources = new File("resources");
+                try {
+                    resources.mkdir();
+                } catch (SecurityException e) {
+                    System.out.println("Security Exception creating resources directory");
+                }
+            }
+            try {
+                layoutFile.createNewFile();
+                FileWriter fw = new FileWriter(layoutFile);
+                fw.write("1\n" +
+                        "8 84 1\n" +
+                        "10 59 1\n" +
+                        "32 1 1\n" +
+                        "45 82 1\n" +
+                        "48 81 1\n" +
+                        "49 72 1\n" +
+                        "50 73 1\n" +
+                        "51 74 1\n" +
+                        "52 75 1\n" +
+                        "53 76 1\n" +
+                        "54 77 1\n" +
+                        "55 78 1\n" +
+                        "56 79 1\n" +
+                        "57 80 1\n" +
+                        "59 57 1\n" +
+                        "61 83 1\n" +
+                        "65 48 1\n" +
+                        "68 50 1\n" +
+                        "69 62 1\n" +
+                        "70 51 1\n" +
+                        "71 52 1\n" +
+                        "72 53 1\n" +
+                        "73 67 1\n" +
+                        "74 54 1\n" +
+                        "75 55 1\n" +
+                        "76 56 1\n" +
+                        "79 68 1\n" +
+                        "80 69 1\n" +
+                        "81 60 1\n" +
+                        "82 63 1\n" +
+                        "83 49 1\n" +
+                        "84 64 1\n" +
+                        "85 66 1\n" +
+                        "87 61 1\n" +
+                        "89 65 1\n" +
+                        "91 70 1\n" +
+                        "93 71 1\n" +
+                        "222 58 1\n");
+                fw.close();
+            }catch (IOException e) {
+                System.out.println();
+            }
+        }
         Loadout def = new Loadout(layoutFile);
         setCurrentLoadout(def);
     }
