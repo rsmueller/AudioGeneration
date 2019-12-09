@@ -39,7 +39,6 @@ public class EditDeleteWindow extends JDialog {
                 for (File f : resources.listFiles()){
                     f.delete();
                 }
-                resources.delete();
 
                 for (File file : temp.listFiles()){
                     try {
